@@ -1,25 +1,18 @@
-package com.example.backend.chat;
+package com.example.backend.model.chat;
 
+import com.example.backend.model.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 
 @Entity(name = "chat")
-public class Chat {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
+public class Chat extends BaseEntity {
     @NotNull
     private ChatType type;
 
     @Column(name = "title", nullable = true)
     private String title;
-
-    @Column(name = "date_created", nullable = false)
-    private LocalDateTime dateCreated;
 
     public Chat() {}
 
@@ -30,14 +23,6 @@ public class Chat {
         this.type = type;
         this.title = title;
         this.dateCreated = LocalDateTime.now();
-    }
-
-    public Long getId() {
-        return this.id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public ChatType getChatType() {

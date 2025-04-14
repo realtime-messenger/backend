@@ -1,17 +1,13 @@
-package com.example.backend.blackList;
+package com.example.backend.model.blackList;
 
-import com.example.backend.user.User;
+import com.example.backend.model.BaseEntity;
+import com.example.backend.model.user.User;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
 @Entity(name = "black_list")
-public class BlackList {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
+public class BlackList extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "blocker_id", nullable = false)
     private User blocker; // Кто добавил в чёрный список
@@ -33,14 +29,6 @@ public class BlackList {
         this.blocker = blocker;
         this.blocked = blocked;
         this.dateCreated = LocalDateTime.now();
-    }
-
-    public Long getId() {
-        return this.id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public User getBlocker() {

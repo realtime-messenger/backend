@@ -1,27 +1,19 @@
-package com.example.backend.message;
+package com.example.backend.model.message;
 
-import com.example.backend.chat.Chat;
+import com.example.backend.model.BaseEntity;
+import com.example.backend.model.chat.Chat;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
 @Entity(name = "message")
-public class Message {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
-
+public class Message extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chat_id", nullable = false)
     private Chat chat;
 
     @Column(name = "text", nullable = false)
     private String text;
-
-    @Column(name = "date_created", nullable = false)
-    private LocalDateTime dateCreated;
 
     public Message() {}
 

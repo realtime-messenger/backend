@@ -1,4 +1,4 @@
-package com.example.backend.chat;
+package com.example.backend.model.chat;
 
 public class PrivateChatTitleAccessException extends RuntimeException {
     public PrivateChatTitleAccessException(String message) {

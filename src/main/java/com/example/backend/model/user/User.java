@@ -1,17 +1,11 @@
-package com.example.backend.user;
+package com.example.backend.model.user;
 
+import com.example.backend.model.BaseEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-
 import java.time.LocalDateTime;
 
 @Entity(name = "users")
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
+public class User extends BaseEntity {
     @Column(name = "first_name", nullable = false)
     private String firstName;
 
@@ -26,9 +20,6 @@ public class User {
 
     @Column(name = "password", nullable = false)
     private byte[] password;
-
-    @Column(name = "date_created", nullable = false)
-    private LocalDateTime dateCreated;
 
     public User() {}
 

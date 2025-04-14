@@ -1,18 +1,14 @@
-package com.example.backend.userMessageStatus;
+package com.example.backend.model.userMessageStatus;
 
-import com.example.backend.message.Message;
-import com.example.backend.user.User;
+import com.example.backend.model.BaseEntity;
+import com.example.backend.model.message.Message;
+import com.example.backend.model.user.User;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
 @Entity(name = "user_message_status")
-public class UserMessageStatus {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
+public class UserMessageStatus extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "message_id", nullable = false)
     private Message message;
@@ -26,9 +22,6 @@ public class UserMessageStatus {
 
     @Column(name = "is_read", nullable = false)
     private Boolean isRead;
-
-    @Column(name = "date_created", nullable = false)
-    private LocalDateTime dateCreated;
 
     public UserMessageStatus() {}
 

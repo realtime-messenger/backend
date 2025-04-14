@@ -1,18 +1,14 @@
-package com.example.backend.userMessageReaction;
+package com.example.backend.model.userMessageReaction;
 
-import com.example.backend.message.Message;
-import com.example.backend.user.User;
+import com.example.backend.model.BaseEntity;
+import com.example.backend.model.message.Message;
+import com.example.backend.model.user.User;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
 @Entity(name = "user_message_reaction")
-public class UserMessageReaction {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
+public class UserMessageReaction extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "message_id", nullable = false)
     private Message message;
@@ -23,9 +19,6 @@ public class UserMessageReaction {
 
     @Column(name = "reaction", nullable = false)
     private String reaction;
-
-    @Column(name = "date_created", nullable = false)
-    private LocalDateTime dateCreated;
 
     public UserMessageReaction() {}
 
