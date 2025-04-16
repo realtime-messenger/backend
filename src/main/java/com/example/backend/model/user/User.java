@@ -2,10 +2,17 @@ package com.example.backend.model.user;
 
 import com.example.backend.model.BaseEntity;
 import jakarta.persistence.*;
+import lombok.Builder;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 
 @Entity(name = "users")
-public class User extends BaseEntity {
+@Builder
+public class User extends BaseEntity implements UserDetails {
     @Column(name = "first_name", nullable = false)
     private String firstName;
 
@@ -16,10 +23,10 @@ public class User extends BaseEntity {
     private String middleName;
 
     @Column(name = "login", nullable = false)
-    private String login;
+    private String username;
 
     @Column(name = "password", nullable = false)
-    private byte[] password;
+    private String password;
 
     public User() {}
 
@@ -27,13 +34,13 @@ public class User extends BaseEntity {
             String firstName,
             String lastName,
             String middleName,
-            String login,
-            byte[] password
+            String username,
+            String password
     ) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.middleName = middleName;
-        this.login = login;
+        this.username = username;
         this.password = password;
         this.dateCreated = LocalDateTime.now();
     }
@@ -41,13 +48,28 @@ public class User extends BaseEntity {
     public User(
             String firstName,
             String lastName,
-            String login,
-            byte[] password
+            String username,
+            String password
     ) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.login = login;
+        this.username = username;
         this.password = password;
         this.dateCreated = LocalDateTime.now();
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of();
+    }
+
+    @Override
+    public String getPassword() {
+        return this.password;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.username;
     }
 }
