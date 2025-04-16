@@ -5,10 +5,13 @@ import com.example.backend.DTO.SignInRequest;
 import com.example.backend.DTO.SignUpRequest;
 import com.example.backend.model.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class AuthenticationService {
@@ -32,6 +35,13 @@ public class AuthenticationService {
     }
 
     public JwtAuthenticationResponse signUp(SignUpRequest request) {
+
+        if (this.userService.existsByUsername(request.getUsername())) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "User with this username already exists"
+            );
+        }
 
         var user = User.builder()
                 .username(request.getUsername())

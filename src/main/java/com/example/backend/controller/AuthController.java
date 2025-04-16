@@ -24,14 +24,20 @@ public class AuthController {
 
     @Operation(summary = "Регистрация пользователя")
     @PostMapping("/sign-up")
-    public JwtAuthenticationResponse signUp(@RequestBody @Valid SignUpRequest request) {
-        System.out.println(request);
+    public JwtAuthenticationResponse signUp(
+            @RequestBody
+            @Valid SignUpRequest request
+    ) {
         return authenticationService.signUp(request);
     }
 
     @Operation(summary = "Авторизация пользователя")
     @PostMapping("/sign-in")
-    public JwtAuthenticationResponse signIn(@RequestBody @Valid SignInRequest request) {
+    public JwtAuthenticationResponse signIn(
+            @RequestBody
+            @Valid
+            SignInRequest request
+    ) {
         return authenticationService.signIn(request);
     }
 }

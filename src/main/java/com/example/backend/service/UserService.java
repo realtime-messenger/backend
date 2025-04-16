@@ -53,4 +53,8 @@ public class UserService {
         return getByUsername(username);
     }
 
+    boolean existsByUsername(String username) {
+        return this.repository.existsByUsername(username);
+    }
+
 }
