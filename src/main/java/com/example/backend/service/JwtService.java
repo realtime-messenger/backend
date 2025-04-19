@@ -3,80 +3,112 @@ package com.example.backend.service;
 import com.example.backend.model.user.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
 import java.security.Key;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
 
-@Service
+
+@Component
 public class JwtService {
-    @Value("${token.signing.key}")
-    private String jwtSigningKey;
 
+    private final SecretKey jwtAccessSecret;
+    private final SecretKey jwtRefreshSecret;
+    private final int minutesToExpireAccess;
+    private final int minutesToExpireRefresh;
 
-    public String extractUserName(String token) {
-        return extractClaim(token, Claims::getSubject);
+    public JwtService(
+            @Value("${jwt.secret.access}") String jwtAccessSecret,
+            @Value("${jwt.secret.refresh}") String jwtRefreshSecret,
+            @Value("${jwt.secret.minutes-to-expire-access}") int minutesToExpireAccess,
+            @Value("${jwt.secret.minutes-to-expire-refresh}") int minutesToExpireRefresh
+    ) {
+        this.jwtAccessSecret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtAccessSecret));
+        this.jwtRefreshSecret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtRefreshSecret));
+        this.minutesToExpireAccess = minutesToExpireAccess;
+        this.minutesToExpireRefresh = minutesToExpireRefresh;
     }
 
-
-    public String generateToken(UserDetails userDetails) {
-        Map<String, Object> claims = new HashMap<>();
-
-        if (userDetails instanceof User customUserDetails) {
-            claims.put("id", customUserDetails.getId());
-            claims.put("login", customUserDetails.getUsername());
-        }
-
-        return generateToken(claims, userDetails);
-    }
-
-
-    public boolean isTokenValid(String token, UserDetails userDetails) {
-        final String userName = extractUserName(token);
-        return (userName.equals(userDetails.getUsername())) && !isTokenExpired(token);
-    }
-
-    private <T> T extractClaim(String token, Function<Claims, T> claimsResolvers) {
-        final Claims claims = extractAllClaims(token);
-        return claimsResolvers.apply(claims);
-    }
-
-    private String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+    public String generateAccessToken(
+            @NonNull
+            User user
+    ) {
+        final LocalDateTime now = LocalDateTime.now();
+        final Instant accessExpirationInstant = now.plusMinutes(this.minutesToExpireAccess).atZone(ZoneId.systemDefault()).toInstant();
+        final Date accessExpiration = Date.from(accessExpirationInstant);
         return Jwts.builder()
-                .claims(extraClaims)
-                .subject(userDetails.getUsername())
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 100000 * 60 * 24))
-                .signWith(getSigningKey())
+                .subject(user.getUsername())
+                .expiration(accessExpiration)
+                .signWith(jwtAccessSecret)
+                .claim("firstName", user.getFirstName())
                 .compact();
     }
 
-    private boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
+    public String generateRefreshToken(
+            @NonNull
+            User user
+    ) {
+        final LocalDateTime now = LocalDateTime.now();
+        final Instant refreshExpirationInstant = now.plusMinutes(this.minutesToExpireRefresh).atZone(ZoneId.systemDefault()).toInstant();
+        final Date refreshExpiration = Date.from(refreshExpirationInstant);
+        return Jwts.builder()
+                .subject(user.getUsername())
+                .expiration(refreshExpiration)
+                .signWith(jwtRefreshSecret)
+                .compact();
     }
 
-    private Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
+    public boolean validateAccessToken(
+            @NonNull
+            String accessToken
+    ) {
+        return validateToken(accessToken, jwtAccessSecret);
     }
 
-    private Claims extractAllClaims(String token) {
+    public boolean validateRefreshToken(
+            @NonNull
+            String refreshToken
+    ) {
+        return validateToken(refreshToken, jwtRefreshSecret);
+    }
+
+    private boolean validateToken(
+            @NonNull String token,
+            @NonNull Key secret
+    ) {
+        try {
+            Jwts.parser()
+                    .verifyWith((SecretKey) secret)
+                    .build()
+                    .parseSignedClaims(token).getPayload();
+            return true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return false;
+    }
+
+    public Claims getAccessClaims(@NonNull String token) {
+        return getClaims(token, jwtAccessSecret);
+    }
+
+    public Claims getRefreshClaims(@NonNull String token) {
+        return getClaims(token, jwtRefreshSecret);
+    }
+
+    private Claims getClaims(@NonNull String token, @NonNull Key secret) {
         return Jwts.parser()
-                .setSigningKey(getSigningKey())
+                .verifyWith((SecretKey) secret)
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
-    }
-
-    private Key getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(jwtSigningKey);
-        return Keys.hmacShaKeyFor(keyBytes);
     }
 }
