@@ -8,6 +8,7 @@ import com.example.backend.model.user.User;
 import com.example.backend.service.AuthService;
 import com.example.backend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.security.auth.message.AuthException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +19,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/auth")
 @Tag(name = "Аутентификация")
+//@SecurityRequirement(name = "bearerAuth")
 public class AuthController {
-
     private final AuthService authService;
     private final UserService userService;
 

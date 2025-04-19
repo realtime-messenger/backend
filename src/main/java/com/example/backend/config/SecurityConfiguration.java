@@ -1,5 +1,9 @@
-package com.example.backend.security;
+package com.example.backend.config;
 
+import com.example.backend.security.JwtFilter;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,6 +22,12 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 public class SecurityConfiguration {
     private final JwtFilter jwtFilter;
 
+    private static final String[] AUTH_WHITE_LIST = {
+            "/swagger-ui/**",
+            "/api-docs/**",
+            "/auth/**"
+    };
+
     public SecurityConfiguration(JwtFilter jwtFilter) {
         this.jwtFilter = jwtFilter;
     }
@@ -28,11 +38,7 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/swagger-ui/**",
-                                "/api-docs/**",
-                                "/auth/**"
-                        )
+                        .requestMatchers(AUTH_WHITE_LIST)
                         .permitAll()
                         .anyRequest()
                         .authenticated()
