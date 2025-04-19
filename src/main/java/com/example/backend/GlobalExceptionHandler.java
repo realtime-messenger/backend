@@ -23,18 +23,22 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity<Map<String, String>> handleRuntimeExceptions (ResponseStatusException ex) {
+    public ResponseEntity<Map<String, String>> handleResponseStatusExceptions(ResponseStatusException ex) {
         Map<String, String> errors = new HashMap<>();
 
         errors.put(
                 "error", ex.getReason()
         );
 
+        errors.put(
+                "errorMessage", ex.getMessage()
+        );
+
         return ResponseEntity.badRequest().body(errors);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<Map<String, String>> handleOtherException(HttpMessageNotReadableException ex) {
+    public ResponseEntity<Map<String, String>> handleNotReadableMessage(HttpMessageNotReadableException ex) {
         Map<String, String> errors = new HashMap<>();
 
         errors.put(
@@ -45,7 +49,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<Map<String, String>> handleAnotherException(RuntimeException ex) {
+    public ResponseEntity<Map<String, String>> handleRuntimeException(RuntimeException ex) {
         Map<String, String> errors = new HashMap<>();
 
         errors.put(
@@ -56,7 +60,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, String>> handleOneAnotherException(Exception ex) {
+    public ResponseEntity<Map<String, String>> handleException(Exception ex) {
         Map<String, String> errors = new HashMap<>();
 
         errors.put(
