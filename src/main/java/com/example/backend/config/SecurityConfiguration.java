@@ -18,7 +18,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
 public class SecurityConfiguration {
     private final JwtFilter jwtFilter;
 
@@ -36,7 +35,6 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(AUTH_WHITE_LIST)
                         .permitAll()

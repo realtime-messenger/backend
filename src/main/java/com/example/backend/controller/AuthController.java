@@ -8,7 +8,6 @@ import com.example.backend.model.user.User;
 import com.example.backend.service.AuthService;
 import com.example.backend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.security.auth.message.AuthException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +31,6 @@ public class AuthController {
     @Operation(summary = "Регистрация")
     @PostMapping("/registration")
     public ResponseEntity<JwtResponse> registration(
-//            @RequestHeader(name = "Authorization", required = false)
-//            String apiKey,
             @RequestBody
             CreateUserRequest request
     ) throws AuthException {
