@@ -10,15 +10,19 @@ import java.time.LocalDateTime;
 public class BlackList extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "blocker_id", nullable = false)
-    private User blocker; // Кто добавил в чёрный список
+    private User blocker;
+    @Column(name = "blocker_id", insertable = false, updatable = false)
+    private Long blockerId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "blocked_id", nullable = false)
-    private User blocked; // Кого добавили в чёрный список
+    private User blocked;
+    @Column(name = "blocked_id", insertable = false, updatable = false)
+    private Long blockedId;
+
 
     @Column(name = "date_created", nullable = false)
     private LocalDateTime dateCreated;
-
 
     public BlackList() {}
 
@@ -29,30 +33,6 @@ public class BlackList extends BaseEntity {
         this.blocker = blocker;
         this.blocked = blocked;
         this.dateCreated = LocalDateTime.now();
-    }
-
-    public User getBlocker() {
-        return this.blocker;
-    }
-
-    public void setBlocker(User blocker) {
-        this.blocker = blocker;
-    }
-
-    public User getBlocked() {
-        return this.blocked;
-    }
-
-    public void setBlocked(User blocked) {
-        this.blocked = blocked;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return dateCreated;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.dateCreated = createdAt;
     }
 }
 

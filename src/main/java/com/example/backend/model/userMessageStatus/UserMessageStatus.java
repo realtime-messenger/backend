@@ -12,10 +12,14 @@ public class UserMessageStatus extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "message_id", nullable = false)
     private Message message;
+    @Column(name = "message_id", insertable = false, updatable = false)
+    private Long messageId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+    @Column(name = "user_id", insertable = false, updatable = false)
+    private Long userId;
 
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted;
@@ -35,5 +39,4 @@ public class UserMessageStatus extends BaseEntity {
         this.isRead = false;
         this.dateCreated = LocalDateTime.now();
     }
-
 }

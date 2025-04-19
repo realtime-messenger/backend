@@ -12,11 +12,19 @@ import java.time.LocalDateTime;
 public class UserChat extends BaseEntity {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "chat_id", nullable = false)
     public Chat chat;
+
+    @Column(name = "chat_id", insertable = false, updatable = false)
+    private Long chatId;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     public User user;
+
+    @Column(name = "user_id", insertable = false, updatable = false)
+    private Long userId;
 
     public UserChat () {}
 
