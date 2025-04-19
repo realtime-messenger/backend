@@ -45,10 +45,12 @@ public class JwtService {
         final Instant accessExpirationInstant = now.plusMinutes(this.minutesToExpireAccess).atZone(ZoneId.systemDefault()).toInstant();
         final Date accessExpiration = Date.from(accessExpirationInstant);
         return Jwts.builder()
-                .subject(user.getUsername())
+                .subject(String.valueOf(user.getId()))
                 .expiration(accessExpiration)
                 .signWith(jwtAccessSecret)
                 .claim("firstName", user.getFirstName())
+                .claim("lastName", user.getLastName())
+                .claim("username", user.getUsername())
                 .compact();
     }
 
@@ -60,9 +62,12 @@ public class JwtService {
         final Instant refreshExpirationInstant = now.plusMinutes(this.minutesToExpireRefresh).atZone(ZoneId.systemDefault()).toInstant();
         final Date refreshExpiration = Date.from(refreshExpirationInstant);
         return Jwts.builder()
-                .subject(user.getUsername())
+                .subject(String.valueOf(user.getId()))
                 .expiration(refreshExpiration)
                 .signWith(jwtRefreshSecret)
+                .claim("firstName", user.getFirstName())
+                .claim("lastName", user.getLastName())
+                .claim("username", user.getUsername())
                 .compact();
     }
 
