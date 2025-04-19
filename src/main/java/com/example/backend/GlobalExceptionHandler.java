@@ -54,4 +54,15 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.badRequest().body(errors);
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Map<String, String>> handleOneAnotherException(Exception ex) {
+        Map<String, String> errors = new HashMap<>();
+
+        errors.put(
+                "error", ex.getMessage()
+        );
+
+        return ResponseEntity.badRequest().body(errors);
+    }
 }

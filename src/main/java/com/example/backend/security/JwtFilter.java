@@ -10,7 +10,6 @@ import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -32,10 +31,15 @@ public class JwtFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
 
+        System.out.println("FILTERING");
+        System.out.println(authHeader);
+
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
+
+        System.out.println("STILL FILTERING");
 
         try {
             final String jwt = authHeader.substring(7);
@@ -47,10 +51,12 @@ public class JwtFilter extends OncePerRequestFilter {
                         null
                 );
 
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                System.out.println("MAKING TOKEN VALID");
+
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
 
+            System.out.println("DOING FILTERING");
             filterChain.doFilter(request, response);
         } catch (Exception exception) {
             System.out.println(exception.getMessage());

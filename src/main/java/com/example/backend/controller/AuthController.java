@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/auth")
 @Tag(name = "Аутентификация")
-//@SecurityRequirement(name = "bearerAuth")
 public class AuthController {
     private final AuthService authService;
     private final UserService userService;
@@ -33,6 +32,8 @@ public class AuthController {
     @Operation(summary = "Регистрация")
     @PostMapping("/registration")
     public ResponseEntity<JwtResponse> registration(
+//            @RequestHeader(name = "Authorization", required = false)
+//            String apiKey,
             @RequestBody
             CreateUserRequest request
     ) throws AuthException {
