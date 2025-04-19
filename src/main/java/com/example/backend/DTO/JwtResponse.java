@@ -1,10 +1,14 @@
 package com.example.backend.DTO;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 
 @Getter
 @Builder
+@Data
+@Schema(description = "Ответ на вход")
 public class JwtResponse {
 
     private final String type = "Bearer";

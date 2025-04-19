@@ -1,15 +1,15 @@
 package com.example.backend.DTO;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@Data
+@Schema(description = "Ответ регистрации")
 public class CreateUserResponse {
 
     private long id;
