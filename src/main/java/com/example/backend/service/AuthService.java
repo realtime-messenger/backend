@@ -45,8 +45,8 @@ public class AuthService {
     public JwtResponse refresh(@NonNull String refreshToken) throws AuthException {
         if (jwtProvider.validateRefreshToken(refreshToken)) {
             final Claims claims = jwtProvider.getRefreshClaims(refreshToken);
-            final String username = claims.getSubject();
-            final User user = userService.getByUsername(username);
+            final Long id = Long.parseLong(claims.getSubject());
+            final User user = userService.getById(id);
             final String accessToken = jwtProvider.generateAccessToken(user);
             final String newRefreshToken = jwtProvider.generateRefreshToken(user);
             return new JwtResponse(accessToken, newRefreshToken);
