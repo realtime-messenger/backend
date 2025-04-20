@@ -66,7 +66,21 @@ public class GlobalExceptionHandler {
         errors.put(
                 "error", ex.getMessage()
         );
-
         return ResponseEntity.badRequest().body(errors);
+    }
+
+    @ExceptionHandler(BaseHttpException.class)
+    public ResponseEntity<Map<String, String>> handleCustomException(BaseHttpException ex) {
+        Map<String, String> errors = new HashMap<>();
+
+        errors.put(
+                "error", ex.getMessage()
+        );
+
+        var response = ResponseEntity
+                .status(ex.getStatusCode())
+                .body(errors);
+
+        return response;
     }
 }

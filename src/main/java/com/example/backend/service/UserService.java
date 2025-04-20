@@ -26,11 +26,7 @@ public class UserService {
 
     public User create(User user) {
         if (repository.existsByUsername(user.getUsername())) {
-            throw new RuntimeException("Пользователь с таким именем уже существует");
-        }
-
-        if (repository.existsByUsername(user.getUsername())) {
-            throw new RuntimeException("Пользователь с таким именем пользователя уже существует");
+            throw new UserAlreadyExistException();
         }
 
         return save(user);
@@ -39,9 +35,8 @@ public class UserService {
     public User getByUsername(String username) {
         return repository.findByUsername(username)
                 .orElseThrow(
-                        () -> new UsernameNotFoundException("Пользователь не найден")
+                        UserNotFoundException::new
                 );
-
     }
 
     public UserDetailsService userDetailsService() {
@@ -49,8 +44,8 @@ public class UserService {
     }
 
     public User getCurrentUser() {
-        var username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return getByUsername(username);
+        long id = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
+        return getById(id);
     }
 
     boolean existsByUsername(String username) {

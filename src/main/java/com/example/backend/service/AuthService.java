@@ -2,6 +2,8 @@ package com.example.backend.service;
 
 import com.example.backend.DTO.JwtRequest;
 import com.example.backend.DTO.JwtResponse;
+import com.example.backend.exceptions.JwtException;
+import com.example.backend.exceptions.WrongPasswordException;
 import com.example.backend.model.user.User;
 import io.jsonwebtoken.Claims;
 import jakarta.security.auth.message.AuthException;
@@ -24,13 +26,13 @@ public class AuthService {
     public JwtResponse login(
             @NonNull
             JwtRequest authRequest
-    ) throws AuthException {
+    ) throws WrongPasswordException {
         final User user = userService.getByUsername(authRequest.getUsername());
 
         if (user.getPassword().equals(authRequest.getPassword())) {
             return this.getJwtToken(user);
         } else {
-            throw new AuthException("Неправильный пароль");
+            throw new WrongPasswordException();
         }
     }
 
@@ -51,6 +53,6 @@ public class AuthService {
             final String newRefreshToken = jwtProvider.generateRefreshToken(user);
             return new JwtResponse(accessToken, newRefreshToken);
         }
-        throw new AuthException("Невалидный JWT токен");
+        throw new JwtException();
     }
 }
