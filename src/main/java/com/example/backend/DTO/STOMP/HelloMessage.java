@@ -1,4 +1,4 @@
-package com.example.backend.controller;
+package com.example.backend.DTO.STOMP;
 
 import lombok.Getter;
 import lombok.Setter;

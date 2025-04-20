@@ -1,31 +1,37 @@
 package com.example.backend.service;
 
+import com.example.backend.DTO.REST.UserResponse;
 import com.example.backend.exceptions.UserAlreadyExistException;
 import com.example.backend.exceptions.UserNotFoundException;
+import com.example.backend.mapper.UserMapper;
 import com.example.backend.model.user.User;
 import com.example.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserService {
 
-    private final UserRepository repository;
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @Autowired
-    public UserService(UserRepository repository) {
-        this.repository = repository;
+    public UserService(UserRepository userRepository, UserMapper userMapper) {
+        this.userRepository = userRepository;
+        this.userMapper = userMapper;
     }
 
 
     public User save(User user) {
-        return repository.save(user);
+        return userRepository.save(user);
     }
 
 
     public User create(User user) {
-        if (repository.existsByUsername(user.getUsername())) {
+        if (userRepository.existsByUsername(user.getUsername())) {
             throw new UserAlreadyExistException();
         }
 
@@ -33,14 +39,14 @@ public class UserService {
     }
 
     public User getByUsername(String username) {
-        return repository.findByUsername(username)
+        return userRepository.findByUsername(username)
                 .orElseThrow(
                         UserNotFoundException::new
                 );
     }
 
     public User getById(Long id) {
-        return repository.findById(id)
+        return userRepository.findById(id)
                 .orElseThrow(
                         UserNotFoundException::new
                 );
@@ -52,8 +58,14 @@ public class UserService {
         return getById(id);
     }
 
-    boolean existsByUsername(String username) {
-        return this.repository.existsByUsername(username);
+
+    public List<UserResponse> getUsersAlike(
+            String query
+    ) {
+        return userMapper.toUserResponseList(userRepository.findFuzzy(query));
     }
 
+    boolean existsByUsername(String username) {
+        return this.userRepository.existsByUsername(username);
+    }
 }

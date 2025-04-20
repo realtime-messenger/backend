@@ -3,6 +3,7 @@ package com.example.backend.controller;
 import com.example.backend.DTO.REST.MessageResponseExtended;
 import com.example.backend.service.MessageService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -18,6 +19,7 @@ import java.util.Collection;
 @RestController
 @RequestMapping("/api/v1/message")
 @Tag(name = "Сообщения")
+@SecurityRequirement(name = "bearerAuth")
 public class MessageController {
 
     private final MessageService messageService;

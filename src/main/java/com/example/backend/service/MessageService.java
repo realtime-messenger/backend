@@ -18,11 +18,11 @@ import java.util.List;
 @Service
 public class MessageService {
 
-    private final MessageRepository messageRepository;
 
     private final MessageMapper messageMapper;
     private final ReactionsMapper reactionsMapper;
 
+    private final MessageRepository messageRepository;
     private final UserChatRepository userChatRepository;
     private final StatusRepository statusRepository;
     private final ReactionRepository reactionRepository;
