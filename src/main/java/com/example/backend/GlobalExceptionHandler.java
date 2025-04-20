@@ -1,5 +1,6 @@
 package com.example.backend;
 
+import com.example.backend.exceptions.BaseHttpException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;

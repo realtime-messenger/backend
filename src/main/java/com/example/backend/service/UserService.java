@@ -1,11 +1,11 @@
 package com.example.backend.service;
 
+import com.example.backend.exceptions.UserAlreadyExistException;
+import com.example.backend.exceptions.UserNotFoundException;
 import com.example.backend.model.user.User;
 import com.example.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -39,8 +39,12 @@ public class UserService {
                 );
     }
 
-    public UserDetailsService userDetailsService() {
-        return this::getByUsername;
+    public User getById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(
+                        UserNotFoundException::new
+                );
+
     }
 
     public User getCurrentUser() {
