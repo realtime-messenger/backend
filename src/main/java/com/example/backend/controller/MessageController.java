@@ -1,6 +1,5 @@
 package com.example.backend.controller;
 
-import com.example.backend.DTO.ChatResponse;
 import com.example.backend.DTO.MessageResponseExtended;
 import com.example.backend.service.MessageService;
 import io.swagger.v3.oas.annotations.Operation;

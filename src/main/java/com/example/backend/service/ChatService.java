@@ -1,18 +1,11 @@
 package com.example.backend.service;
 
 import com.example.backend.DTO.ChatResponse;
-import com.example.backend.DTO.MessageResponseExtended;
 import com.example.backend.mapper.ChatMapper;
-import com.example.backend.mapper.MessageMapper;
-import com.example.backend.mapper.ReactionsMapper;
 import com.example.backend.model.chat.Chat;
 import com.example.backend.model.message.Message;
-import com.example.backend.model.userMessageReaction.UserMessageReaction;
-import com.example.backend.model.userMessageStatus.UserMessageStatus;
 import com.example.backend.repository.ChatRepository;
 import com.example.backend.repository.MessageRepository;
-import com.example.backend.repository.ReactionRepository;
-import com.example.backend.repository.StatusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

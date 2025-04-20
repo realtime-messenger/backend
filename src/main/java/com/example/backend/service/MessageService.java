@@ -1,12 +1,9 @@
 package com.example.backend.service;
 
-import com.example.backend.DTO.ChatResponse;
 import com.example.backend.DTO.MessageResponseExtended;
 import com.example.backend.exceptions.ChatNotFoundException;
-import com.example.backend.mapper.ChatMapper;
 import com.example.backend.mapper.MessageMapper;
 import com.example.backend.mapper.ReactionsMapper;
-import com.example.backend.model.chat.Chat;
 import com.example.backend.model.message.Message;
 import com.example.backend.model.userMessageReaction.UserMessageReaction;
 import com.example.backend.model.userMessageStatus.UserMessageStatus;
