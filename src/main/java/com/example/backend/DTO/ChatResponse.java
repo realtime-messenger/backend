@@ -2,6 +2,7 @@ package com.example.backend.DTO;
 
 import com.example.backend.model.chat.ChatType;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.annotation.Nullable;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,6 +18,9 @@ public class ChatResponse {
     private String title;
     private String type;
     private LocalDateTime dateCreated;
+
+    @Nullable
+    private MessageResponseExtended lastMessage;
 
     public ChatResponse (
             long id,
