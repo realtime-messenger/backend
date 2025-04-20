@@ -1,6 +1,6 @@
 package com.example.backend.mapper;
 
-import com.example.backend.DTO.ChatResponse;
+import com.example.backend.DTO.REST.ChatResponse;
 import com.example.backend.model.chat.Chat;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;

@@ -1,9 +1,9 @@
 package com.example.backend.controller;
 
-import com.example.backend.DTO.CreateUserRequest;
-import com.example.backend.DTO.JwtRefreshRequest;
-import com.example.backend.DTO.JwtRequest;
-import com.example.backend.DTO.JwtResponse;
+import com.example.backend.DTO.REST.CreateUserRequest;
+import com.example.backend.DTO.REST.JwtRefreshRequest;
+import com.example.backend.DTO.REST.JwtRequest;
+import com.example.backend.DTO.REST.JwtResponse;
 import com.example.backend.model.user.User;
 import com.example.backend.service.AuthService;
 import com.example.backend.service.UserService;

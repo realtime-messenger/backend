@@ -1,6 +1,6 @@
 package com.example.backend.controller;
 
-import com.example.backend.DTO.ChatResponse;
+import com.example.backend.DTO.REST.ChatResponse;
 import com.example.backend.service.ChatService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

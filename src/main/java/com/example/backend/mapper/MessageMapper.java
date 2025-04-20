@@ -1,7 +1,7 @@
 package com.example.backend.mapper;
 
-import com.example.backend.DTO.MessageResponse;
-import com.example.backend.DTO.MessageResponseExtended;
+import com.example.backend.DTO.REST.MessageResponse;
+import com.example.backend.DTO.REST.MessageResponseExtended;
 import com.example.backend.model.message.Message;
 import com.example.backend.model.userMessageStatus.UserMessageStatus;
 import org.mapstruct.Mapper;

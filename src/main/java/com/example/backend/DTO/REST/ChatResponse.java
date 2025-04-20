@@ -1,4 +1,4 @@
-package com.example.backend.DTO;
+package com.example.backend.DTO.REST;
 
 import com.example.backend.model.chat.ChatType;
 import io.swagger.v3.oas.annotations.media.Schema;

@@ -1,6 +1,6 @@
 package com.example.backend.controller;
 
-import com.example.backend.DTO.MessageResponseExtended;
+import com.example.backend.DTO.REST.MessageResponseExtended;
 import com.example.backend.service.MessageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,7 +19,6 @@ import java.util.Collection;
 @RequestMapping("/api/v1/message")
 @Tag(name = "Сообщения")
 public class MessageController {
-
 
     private final MessageService messageService;
 

@@ -1,6 +1,6 @@
 package com.example.backend.service;
 
-import com.example.backend.DTO.ChatResponse;
+import com.example.backend.DTO.REST.ChatResponse;
 import com.example.backend.mapper.ChatMapper;
 import com.example.backend.model.chat.Chat;
 import com.example.backend.model.message.Message;
