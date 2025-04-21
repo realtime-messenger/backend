@@ -5,10 +5,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class StartChatRequest {
+public class ReadMessageRequest {
 
-    private long userId;
+    private long messageId;
 
-    public StartChatRequest() {
+    public ReadMessageRequest() {
     }
 }
