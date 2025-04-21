@@ -50,6 +50,10 @@ dependencies {
 
     implementation 'org.mapstruct:mapstruct:1.5.5.Final'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+
+    implementation 'org.springframework:spring-messaging'
+    implementation 'io.projectreactor.netty:reactor-netty'
+
 }
 
 tasks.named('test') {

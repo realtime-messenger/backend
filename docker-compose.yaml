@@ -18,12 +18,23 @@ services:
       - .env
 
   rabbitmq:
-    image: 'rabbitmq:latest'
+    container_name: ${COMPOSE_PROJECT_NAME}-rabbitmq
+    image: 'rabbitmq:4-management'
     environment:
       - 'RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}'
       - 'RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}'
+    command: >
+      bash -c "rabbitmq-plugins enable rabbitmq_stomp && rabbitmq-server"
     ports:
-      - '5672'
+      - "127.0.0.1:5672:5672"
+      - "127.0.0.1:15672:15672"
+      - "127.0.0.1:15691:15691"
+      - "127.0.0.1:15692:15692"
+      - "127.0.0.1:25672:25672"
+      - "127.0.0.1:4369:4369"
+      - "127.0.0.1:45781:45781"
+      - "127.0.0.1:5671:5671"
+      - "127.0.0.1:61613:61613"
     volumes:
       - ./data/rabbitmq_data:/data
     env_file:

@@ -26,32 +26,41 @@ public class WebSocketInterceptor implements HandshakeInterceptor {
             Map<String, Object> attributes
     ) throws Exception {
         System.out.println("INTERCEPTIN A WEBSCOKET HANDSHAKE");
-
         String query = request.getURI().getQuery();
-        String token = null;
-        if (query != null && query.contains("token=")) {
-            token = query.split("token=")[1].split("&")[0];
+
+        System.out.println(query);
+
+        if (query == null || !query.contains("token=")) {
+            System.out.println("Bad query");
+            return false;
         }
 
-        if (token != null) {
-            try {
-                boolean isValid = jwtService.validateAccessToken(token);
+        String token = query.split("token=")[1].split("&")[0];;
 
-                if (isValid) {
-                    String userId = jwtService.getAccessClaims(token).getSubject();
-                    attributes.put("userId", userId); // Сохраняем данные пользователя для использования в WebSocketHandler
-                    return true;
-                }
+        if (token == null) {
+            System.out.println("Token is null");
+            return false;
+        }
+
+        try {
+            if (!jwtService.validateAccessToken(token)) {
+                System.out.println("Token is not valid");
                 return false;
-            } catch (Exception e) {
-                return false;
+
             }
+            String userId = jwtService.getAccessClaims(token).getSubject();
+            attributes.put("userId", userId); // Сохраняем данные пользователя для использования в WebSocketHandler
+            return true;
+        } catch (Exception e) {
+            return false;
         }
-        return false;
     }
 
     @Override
-    public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response,
-                               WebSocketHandler wsHandler, Exception exception) {
-    }
+    public void afterHandshake(
+            ServerHttpRequest request,
+            ServerHttpResponse response,
+            WebSocketHandler wsHandler,
+            Exception exception
+    ) {}
 }
