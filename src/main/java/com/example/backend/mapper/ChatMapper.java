@@ -1,6 +1,6 @@
 package com.example.backend.mapper;
 
-import com.example.backend.DTO.REST.ChatResponse;
+import com.example.backend.DTO.response.ChatExtendedResponse;
 import com.example.backend.model.chat.Chat;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
@@ -12,6 +12,6 @@ import java.util.List;
 @Component
 public interface ChatMapper {
 
-    ChatResponse toChatResponse(Chat chat); //map User to UserResponse
-    List<ChatResponse> toChatResponseList(List<Chat> chats); //map list of User to list of UserResponse
+    ChatExtendedResponse toChatExtendedResponse(Chat chat); //map User to UserResponse
+    List<ChatExtendedResponse> toChatResponseList(List<Chat> chats); //map list of User to list of UserResponse
 }

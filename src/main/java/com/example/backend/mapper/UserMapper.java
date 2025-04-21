@@ -1,6 +1,6 @@
 package com.example.backend.mapper;
 
-import com.example.backend.DTO.REST.UserResponse;
+import com.example.backend.DTO.response.UserResponse;
 import com.example.backend.model.user.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;

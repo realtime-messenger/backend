@@ -1,6 +1,6 @@
 package com.example.backend.mapper;
 
-import com.example.backend.DTO.REST.ReactionResponse;
+import com.example.backend.DTO.response.ReactionResponse;
 import com.example.backend.model.userMessageReaction.UserMessageReaction;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;

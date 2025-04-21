@@ -1,6 +1,6 @@
 package com.example.backend.service;
 
-import com.example.backend.DTO.REST.UserResponse;
+import com.example.backend.DTO.response.UserResponse;
 import com.example.backend.exceptions.UserAlreadyExistException;
 import com.example.backend.exceptions.UserNotFoundException;
 import com.example.backend.mapper.UserMapper;

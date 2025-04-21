@@ -1,7 +1,7 @@
 package com.example.backend.service;
 
-import com.example.backend.DTO.REST.JwtRequest;
-import com.example.backend.DTO.REST.JwtResponse;
+import com.example.backend.DTO.request.JwtRequest;
+import com.example.backend.DTO.response.JwtResponse;
 import com.example.backend.exceptions.JwtException;
 import com.example.backend.exceptions.WrongPasswordException;
 import com.example.backend.model.user.User;

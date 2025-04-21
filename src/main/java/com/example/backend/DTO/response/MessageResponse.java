@@ -1,4 +1,4 @@
-package com.example.backend.DTO.REST;
+package com.example.backend.DTO.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;

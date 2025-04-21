@@ -1,6 +1,6 @@
 package com.example.backend.service;
 
-import com.example.backend.DTO.REST.MessageResponseExtended;
+import com.example.backend.DTO.response.MessageExtendedResponse;
 import com.example.backend.exceptions.ChatNotFoundException;
 import com.example.backend.mapper.MessageMapper;
 import com.example.backend.mapper.ReactionsMapper;
@@ -37,7 +37,7 @@ public class MessageService {
         this.reactionRepository = reactionRepository;
     }
 
-    public MessageResponseExtended getMessageExtended (long userId, Message message) {
+    public MessageExtendedResponse getMessageExtended (long userId, Message message) {
         UserMessageStatus status = statusRepository.findMessageStatusByUserIdAndMessageId(
                 userId,
                 message.getId()
@@ -47,7 +47,7 @@ public class MessageService {
                 message.getId()
         );
 
-        MessageResponseExtended tempMessage = messageMapper.toMessageResponseExtended(
+        MessageExtendedResponse tempMessage = messageMapper.toMessageResponseExtended(
                 message,
                 status
         );
@@ -59,7 +59,7 @@ public class MessageService {
         return tempMessage;
     }
 
-    public Collection<MessageResponseExtended> getUserMessages (
+    public Collection<MessageExtendedResponse> getUserMessages (
             long userId,
             long chatId,
             int skip,
@@ -76,7 +76,7 @@ public class MessageService {
                 limit
         );
 
-        List<MessageResponseExtended> result = new ArrayList<>();
+        List<MessageExtendedResponse> result = new ArrayList<>();
 
         for (Message message : messages) {
             result.add(

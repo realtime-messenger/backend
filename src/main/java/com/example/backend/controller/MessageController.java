@@ -1,6 +1,6 @@
 package com.example.backend.controller;
 
-import com.example.backend.DTO.REST.MessageResponseExtended;
+import com.example.backend.DTO.response.MessageExtendedResponse;
 import com.example.backend.service.MessageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -30,7 +30,7 @@ public class MessageController {
 
     @Operation(summary = "Получить сообщения чата пользователя")
     @GetMapping("")
-    public ResponseEntity<Collection<MessageResponseExtended>> getMessages(
+    public ResponseEntity<Collection<MessageExtendedResponse>> getMessages(
             @RequestParam("chatId")
             int chatId,
             @RequestParam("skip")

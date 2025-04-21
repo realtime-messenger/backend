@@ -1,4 +1,4 @@
-package com.example.backend.DTO.REST;
+package com.example.backend.DTO.response;
 
 import com.example.backend.model.chat.ChatType;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -19,10 +19,7 @@ public class ChatResponse {
     private String type;
     private LocalDateTime dateCreated;
 
-    @Nullable
-    private MessageResponseExtended lastMessage;
-
-    public ChatResponse (
+    public ChatResponse(
             long id,
             String title,
             ChatType type,

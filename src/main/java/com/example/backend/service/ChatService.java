@@ -1,6 +1,6 @@
 package com.example.backend.service;
 
-import com.example.backend.DTO.REST.ChatResponse;
+import com.example.backend.DTO.response.ChatExtendedResponse;
 import com.example.backend.mapper.ChatMapper;
 import com.example.backend.model.chat.Chat;
 import com.example.backend.model.message.Message;
@@ -30,11 +30,11 @@ public class ChatService {
         this.messageService = messageService;
     }
 
-    public Collection<ChatResponse> getUserChats (long userId) {
+    public Collection<ChatExtendedResponse> getUserChats (long userId) {
 
         List<Chat> userChats = chatRepository.findUserChats(userId);
 
-        List<ChatResponse> result = new ArrayList<>();
+        List<ChatExtendedResponse> result = new ArrayList<>();
 
         for (Chat userChat : userChats) {
 
@@ -42,7 +42,7 @@ public class ChatService {
                     userChat.getId()
             );
 
-            ChatResponse tempResponse = chatMapper.toChatResponse(userChat);
+            ChatExtendedResponse tempResponse = chatMapper.toChatExtendedResponse(userChat);
 
             tempResponse.setLastMessage(
                     messageService.getMessageExtended(userId, lastMessage)

@@ -1,4 +1,4 @@
-package com.example.backend.DTO.STOMP;
+package com.example.backend.DTO.command;
 
 import lombok.Getter;
 import lombok.Setter;

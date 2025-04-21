@@ -1,4 +1,4 @@
-package com.example.backend.DTO.REST;
+package com.example.backend.DTO.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -10,11 +10,11 @@ import java.util.List;
 @Getter
 @Setter
 @Schema(description = "Расширенный ответ сообщения")
-public class MessageResponseExtended extends MessageResponse {
+public class MessageExtendedResponse extends MessageResponse {
     private boolean isRead;
     private List<ReactionResponse> reactions;
 
-    public MessageResponseExtended(
+    public MessageExtendedResponse(
             long id,
             long chatId,
             String text,
