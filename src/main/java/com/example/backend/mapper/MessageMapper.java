@@ -3,6 +3,7 @@ package com.example.backend.mapper;
 import com.example.backend.DTO.response.MessageResponse;
 import com.example.backend.DTO.response.MessageExtendedResponse;
 import com.example.backend.model.message.Message;
+import com.example.backend.model.userMessageReaction.UserMessageReaction;
 import com.example.backend.model.userMessageStatus.UserMessageStatus;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -15,15 +16,28 @@ import java.util.List;
 @Component
 public interface MessageMapper {
 
-    MessageResponse toMessageResponse(Message message); //map User to UserResponse
-
+    MessageResponse toMessageResponse(Message message);
 
     @Mapping(target = "id", source = "message.id")
+    @Mapping(target = "userId", source = "message.userId")
     @Mapping(target = "dateCreated", source = "message.dateCreated")
     MessageExtendedResponse toMessageResponseExtended(
             Message message,
-            UserMessageStatus userMessageStatus
+            UserMessageStatus userMessageStatus,
+            List<UserMessageReaction> reactions
     );
 
-    List<MessageResponse> toMessagesResponseList(List<Message> messages); //map list of User to list of UserResponse
+    @Mapping(target = "id", source = "message.id")
+    @Mapping(target = "userId", source = "message.userId")
+    @Mapping(target = "dateCreated", source = "message.dateCreated")
+    @Mapping(target = "isRead", source = "isRead")
+    MessageExtendedResponse toMessageResponseExtended(
+            Message message,
+            boolean isRead,
+            List<UserMessageReaction> reactions
+    );
+
+
+
+    List<MessageResponse> toMessagesResponseList(List<Message> messages);
 }

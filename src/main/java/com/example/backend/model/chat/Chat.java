@@ -3,14 +3,17 @@ package com.example.backend.model.chat;
 import com.example.backend.model.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @Entity(name = "chat")
+@Getter
 public class Chat extends BaseEntity {
     @NotNull
     private ChatType type;
 
+    @Getter
     @Column(name = "title", nullable = true)
     private String title;
 
@@ -31,22 +34,6 @@ public class Chat extends BaseEntity {
 
     public void setChatType(ChatType type) {
         this.type = type;
-    }
-
-    public String getTitle() {
-        if (this.type == ChatType.PRIVATE) {
-            throw new PrivateChatTitleAccessException("You can not access title of private chat");
-        } else {
-            return this.title;
-        }
-    }
-
-    public void setTitle (String title) {
-        if (this.type == ChatType.PRIVATE) {
-            throw new PrivateChatTitleAccessException("You can not access title of private chat");
-        } else {
-            this.title = title;
-        }
     }
 
     public LocalDateTime getCreatedAt() {

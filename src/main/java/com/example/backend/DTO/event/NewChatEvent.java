@@ -8,7 +8,11 @@ import lombok.Setter;
 @Data
 @Getter
 @Setter
-public class NewChatEvent extends BaseEvent {
+public class NewChatEvent implements IEvent {
     protected EventType type = EventType.NewChat;
     private ChatResponse chat;
+
+    public NewChatEvent (ChatResponse chat) {
+        this.chat = chat;
+    }
 }

@@ -4,10 +4,12 @@ import com.example.backend.model.BaseEntity;
 import com.example.backend.model.message.Message;
 import com.example.backend.model.user.User;
 import jakarta.persistence.*;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @Entity(name = "user_message_status")
+@Getter
 public class UserMessageStatus extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "message_id", nullable = false)

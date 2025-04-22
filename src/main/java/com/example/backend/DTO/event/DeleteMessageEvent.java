@@ -8,7 +8,7 @@ import lombok.Setter;
 @Data
 @Getter
 @Setter
-public class DeleteMessageEvent extends BaseEvent {
+public class DeleteMessageEvent implements IEvent {
     protected EventType type = EventType.DeleteMessage;
     private long chatId;
     private long messageId;

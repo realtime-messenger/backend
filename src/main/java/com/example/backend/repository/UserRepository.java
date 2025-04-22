@@ -26,4 +26,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
             @Param("query")
             String query
     );
+
+    User getUserById(Long id);
 }

@@ -5,10 +5,12 @@ import com.example.backend.model.chat.Chat;
 import com.example.backend.model.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @Entity(name = "user_chat")
+@Getter
 public class UserChat extends BaseEntity {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
@@ -34,6 +36,15 @@ public class UserChat extends BaseEntity {
     ) {
         this.chat = chat;
         this.user = user;
+        this.dateCreated = LocalDateTime.now();
+    }
+
+    public UserChat (
+            long chatId,
+            long userId
+    ) {
+        this.chatId = chatId;
+        this.userId = userId;
         this.dateCreated = LocalDateTime.now();
     }
 }

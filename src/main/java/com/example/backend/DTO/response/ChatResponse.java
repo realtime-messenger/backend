@@ -19,6 +19,8 @@ public class ChatResponse {
     private String type;
     private LocalDateTime dateCreated;
 
+    private UserResponse interlocutor;
+
     public ChatResponse(
             long id,
             String title,

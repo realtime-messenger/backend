@@ -54,6 +54,8 @@ dependencies {
     implementation 'org.springframework:spring-messaging'
     implementation 'io.projectreactor.netty:reactor-netty'
 
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
 }
 
 tasks.named('test') {

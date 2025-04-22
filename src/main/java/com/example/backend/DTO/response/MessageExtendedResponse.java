@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
-@Setter
 @Schema(description = "Расширенный ответ сообщения")
 public class MessageExtendedResponse extends MessageResponse {
     private boolean isRead;
@@ -17,13 +16,22 @@ public class MessageExtendedResponse extends MessageResponse {
     public MessageExtendedResponse(
             long id,
             long chatId,
+            long userId,
             String text,
             LocalDateTime dateCreated,
             boolean isRead,
             List<ReactionResponse> reactions
     ) {
-        super(id, chatId, text, dateCreated);
+        super(id, chatId, userId, text, dateCreated);
         this.isRead = isRead;
         this.reactions = reactions;
+    }
+
+    public void setIsRead(boolean isRead) {
+        this.isRead=isRead;
+    }
+
+    public void setReactions(List<ReactionResponse> reactions) {
+        this.reactions=reactions;
     }
 }

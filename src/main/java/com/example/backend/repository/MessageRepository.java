@@ -30,4 +30,21 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
             @Param("limit")
             long limit
     );
+
+    @Query("""
+            SELECT m
+            FROM message m
+            WHERE m.chatId = :chatId
+            ORDER BY m.dateCreated DESC
+            LIMIT :limit
+            OFFSET :skip
+            """)
+    Message findMessageByChatId(
+            @Param("chatId")
+            long chatId,
+            @Param("skip")
+            long skip,
+            @Param("limit")
+            long limit
+    );
 }

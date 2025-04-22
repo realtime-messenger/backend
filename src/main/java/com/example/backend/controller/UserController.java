@@ -1,11 +1,14 @@
 package com.example.backend.controller;
 
+import com.example.backend.DTO.response.IdResponse;
 import com.example.backend.DTO.response.UserResponse;
 import com.example.backend.service.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,6 +35,16 @@ public class UserController {
             @Nullable
             String query
     ) {
+        // TODO
+        // не показывать конкретно этого пользователя
+        // не показыавть пользователей с которыми есть приватный чат
        return userService.getUsersAlike(query);
+    }
+
+    @GetMapping("/myId")
+    public IdResponse getMyUserId () {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        long id = Long.parseLong(authentication.getName());
+        return new IdResponse(id);
     }
 }

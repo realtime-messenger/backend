@@ -1,22 +1,39 @@
 package com.example.backend.controller;
 
 import com.example.backend.DTO.command.*;
+import com.example.backend.DTO.event.NewChatEvent;
+import com.example.backend.DTO.event.NewMessageEvent;
+import com.example.backend.DTO.response.MessageExtendedResponse;
+import com.example.backend.mapper.ChatMapper;
+import com.example.backend.model.chat.Chat;
+import com.example.backend.model.user.User;
+import com.example.backend.service.ChatService;
+import com.example.backend.service.EventProducerService;
+import com.example.backend.service.MessageService;
+import com.example.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 
 @Controller
 public class WebSocketController {
+    private final ChatService chatService;
+    private final MessageService messageService;
+    private final ChatMapper chatMapper;
+    private final UserService userService;
+    private final EventProducerService eventProducerService;
 
-    private final SimpMessagingTemplate template;
 
     @Autowired
-    public WebSocketController(SimpMessagingTemplate template) {
-        this.template = template;
+    public WebSocketController(ChatService chatService, MessageService messageService, ChatMapper chatMapper, UserService userService, EventProducerService eventProducerService) {
+        this.chatService = chatService;
+        this.messageService = messageService;
+        this.chatMapper = chatMapper;
+        this.userService = userService;
+        this.eventProducerService = eventProducerService;
     }
 
     @MessageMapping("/start-chat")
@@ -33,18 +50,17 @@ public class WebSocketController {
         // отправлять ивент о создании такого чата всем кого он касается
 
         System.out.println(userId);
-        System.out.println(request.getUserId());
 
-
-        template.convertAndSend("/topic/broadcast", "hi all");
-        template.convertAndSend("/topic/broadcast", "hi all");
-
+        eventProducerService.produceEvent(
+                "/topic/broadcast",
+                "hi all"
+        );
     }
 
-    @MessageMapping("/send-message")
-    public void sendMessage(
+    @MessageMapping("/send-message-chat")
+    public void sendMessageChat(
             @Payload
-            SendMessageRequest request,
+            SendChatMessageRequest request,
             SimpMessageHeaderAccessor headerAccessor
 
     ) throws Exception {
@@ -53,6 +69,59 @@ public class WebSocketController {
         // написать сервис проверяющий может ли пользователь отправлять сообщения в этот чат
         // написать сервис отправляющий сообщение
         // отправлять ивент об отправленном сообщении всем кого он касается
+    }
+
+    @MessageMapping("/send-message-private")
+    public void sendMessagePrivate(
+            @Payload
+            SendPrivateMessageRequest request,
+            SimpMessageHeaderAccessor headerAccessor
+
+    ) throws Exception {
+        long userId = Long.parseLong(headerAccessor.getSessionAttributes().get("userId").toString());
+
+        if (request.getUserId() == userId) {
+            return;
+        }
+
+        User firstUser = userService.getById(userId);
+        User secondUser = userService.getById(request.getUserId());
+
+        if (firstUser == null || secondUser == null) {
+            return;
+        }
+
+        Chat chat = chatService.getUsersPrivateChat(
+                firstUser.getId(),
+                secondUser.getId()
+        );
+
+        if (chat == null) {
+            chat = chatService.startChat(
+                    firstUser,
+                    secondUser
+            );
+
+            eventProducerService.produceEventToUser(
+                    firstUser,
+                    new NewChatEvent(chatMapper.toChatResponse(chat, firstUser))
+            );
+
+            eventProducerService.produceEventToUser(
+                    secondUser,
+                    new NewChatEvent(chatMapper.toChatResponse(chat, secondUser))
+            );
+        }
+
+        MessageExtendedResponse response = messageService.sendMessage(
+                firstUser,
+                chat,
+                request.getText()
+        );
+
+        NewMessageEvent event = new NewMessageEvent(response);
+        eventProducerService.produceEventToUser(firstUser, event);
+        eventProducerService.produceEventToUser(secondUser, event);
     }
 
     @MessageMapping("/delete-message")

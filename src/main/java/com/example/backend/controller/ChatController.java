@@ -1,6 +1,6 @@
 package com.example.backend.controller;
 
-import com.example.backend.DTO.response.ChatExtendedResponse;
+import com.example.backend.DTO.response.ChatResponse;
 import com.example.backend.service.ChatService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -30,7 +30,7 @@ public class ChatController {
 
     @Operation(summary = "Получить чаты пользователя")
     @GetMapping("")
-    public ResponseEntity<Collection<ChatExtendedResponse>> getChats()  {
+    public ResponseEntity<Collection<ChatResponse>> getChats()  {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         long id = Long.parseLong(authentication.getName());
 

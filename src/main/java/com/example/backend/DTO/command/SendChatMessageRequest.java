@@ -5,11 +5,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class SendMessageRequest {
+public class SendChatMessageRequest {
 
     private long chatId;
     private String text;
 
-    public SendMessageRequest() {
+    public SendChatMessageRequest() {
     }
 }

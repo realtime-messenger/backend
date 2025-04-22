@@ -35,7 +35,7 @@ public class MessageController {
             int chatId,
             @RequestParam("skip")
             int skip,
-            @RequestParam("linit")
+            @RequestParam("limit")
             int limit
     )  {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -47,7 +47,19 @@ public class MessageController {
                 skip,
                 limit
         );
+        return ResponseEntity.ok(result);
+    }
 
+    @Operation(summary = "Получить последние сообщения каждого чата пользователя")
+    @GetMapping("/lasts")
+    public ResponseEntity<Collection<MessageExtendedResponse>> getLastsMessages(
+    )  {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        long userId = Long.parseLong(authentication.getName());
+
+        var result = messageService.getLastMessages(
+                userId
+        );
         return ResponseEntity.ok(result);
     }
 
