@@ -37,6 +37,8 @@ public class UserMessageStatus extends BaseEntity {
     ) {
         this.message = message;
         this.user = user;
+        this.messageId = message.getId();
+        this.userId = user.getId();
         this.isDeleted = false;
         this.isRead = false;
         this.dateCreated = LocalDateTime.now();

@@ -36,15 +36,8 @@ public class UserChat extends BaseEntity {
     ) {
         this.chat = chat;
         this.user = user;
-        this.dateCreated = LocalDateTime.now();
-    }
-
-    public UserChat (
-            long chatId,
-            long userId
-    ) {
-        this.chatId = chatId;
-        this.userId = userId;
+        this.chatId = chat.getId();
+        this.userId = user.getId();
         this.dateCreated = LocalDateTime.now();
     }
 }

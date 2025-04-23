@@ -35,6 +35,8 @@ public class UserMessageReaction extends BaseEntity {
     ) {
         this.message = message;
         this.user = user;
+        this.messageId = message.getId();
+        this.userId = user.getId();
         this.reaction = reaction;
         this.dateCreated = LocalDateTime.now();
     }
