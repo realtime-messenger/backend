@@ -48,7 +48,7 @@ public class EventProducerService {
             System.out.println(e.getMessage());
             return;
         }
-        template.convertAndSend("/queue/" + "user" + user.getId(), json);
+        template.convertAndSend("/topic/" + "user" + user.getId(), json);
     }
 
     public void produceEventToChat(
@@ -62,7 +62,7 @@ public class EventProducerService {
             System.out.println(e.getMessage());
             return;
         }
-        template.convertAndSend("/queue/" + "user" + chat.getId(), json);
+        template.convertAndSend("/topic/" + "user" + chat.getId(), json);
     }
 
     public void produceEvent(
