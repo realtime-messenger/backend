@@ -17,6 +17,8 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
 
+import java.util.Optional;
+
 
 @Controller
 public class WebSocketController {
@@ -64,11 +66,17 @@ public class WebSocketController {
             SimpMessageHeaderAccessor headerAccessor
 
     ) throws Exception {
-        String userId = headerAccessor.getSessionAttributes().get("userId").toString();
+        long userId = Long.parseLong(headerAccessor.getSessionAttributes().get("userId").toString());
 
-        // написать сервис проверяющий может ли пользователь отправлять сообщения в этот чат
-        // написать сервис отправляющий сообщение
-        // отправлять ивент об отправленном сообщении всем кого он касается
+        User user = userService.getById(userId);
+
+        Chat chat = chatService.getById(request.getChatId());
+
+        messageService.sendMessageChat(
+                user,
+                chat,
+                request.getText()
+        );
     }
 
     @MessageMapping("/send-message-private")
@@ -87,41 +95,11 @@ public class WebSocketController {
         User firstUser = userService.getById(userId);
         User secondUser = userService.getById(request.getUserId());
 
-        if (firstUser == null || secondUser == null) {
-            return;
-        }
-
-        Chat chat = chatService.getUsersPrivateChat(
-                firstUser.getId(),
-                secondUser.getId()
-        );
-
-        if (chat == null) {
-            chat = chatService.startChat(
-                    firstUser,
-                    secondUser
-            );
-
-            eventProducerService.produceEventToUser(
-                    firstUser,
-                    new NewChatEvent(chatMapper.toChatResponse(chat, firstUser))
-            );
-
-            eventProducerService.produceEventToUser(
-                    secondUser,
-                    new NewChatEvent(chatMapper.toChatResponse(chat, secondUser))
-            );
-        }
-
-        MessageExtendedResponse response = messageService.sendMessage(
+        messageService.sendMessagePrivate(
                 firstUser,
-                chat,
+                secondUser,
                 request.getText()
         );
-
-        NewMessageEvent event = new NewMessageEvent(response);
-        eventProducerService.produceEventToUser(firstUser, event);
-        eventProducerService.produceEventToUser(secondUser, event);
     }
 
     @MessageMapping("/delete-message")

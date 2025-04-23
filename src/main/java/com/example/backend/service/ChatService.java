@@ -7,83 +7,83 @@ import com.example.backend.mapper.ChatMapper;
 import com.example.backend.mapper.UserMapper;
 import com.example.backend.model.chat.Chat;
 import com.example.backend.model.chat.ChatType;
-import com.example.backend.model.message.Message;
 import com.example.backend.model.user.User;
 import com.example.backend.model.userChat.UserChat;
 import com.example.backend.repository.ChatRepository;
-import com.example.backend.repository.MessageRepository;
-import com.example.backend.repository.UserChatRepository;
-import com.example.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ChatService {
 
-    private final ChatRepository chatRepository;
-    private final MessageRepository messageRepository;
-
     private final ChatMapper chatMapper;
-    private final MessageService messageService;
     private final UserMapper userMapper;
-    private final UserChatRepository userChatRepository;
-    private final UserRepository userRepository;
+
+
+    private final UserService userService;
+    private final UserChatService userChatService;
+
+    private final ChatRepository chatRepository;
 
     @Autowired
-    public ChatService(ChatRepository chatRepository, MessageRepository messageRepository, ChatMapper chatMapper, MessageService messageService, UserMapper userMapper, UserChatRepository userChatRepository, UserRepository userRepository) {
+    public ChatService(ChatRepository chatRepository, ChatMapper chatMapper, UserMapper userMapper, UserService userService, UserChatService userChatService) {
         this.chatRepository = chatRepository;
-        this.messageRepository = messageRepository;
         this.chatMapper = chatMapper;
-        this.messageService = messageService;
         this.userMapper = userMapper;
-        this.userChatRepository = userChatRepository;
-        this.userRepository = userRepository;
+        this.userService = userService;
+        this.userChatService = userChatService;
     }
 
-    public Chat save(Chat chat) {
+    public Chat createChat(Chat chat) {
         return chatRepository.save(chat);
     }
 
-
     public User getInterlocutor(long userId, long chatId) {
-        List<UserChat> userChats = userChatRepository.getUserChatsByChatId(chatId);
+        List<UserChat> userChats = userChatService.getUserChatsByChatId(chatId);
 
         if (userChats.size() != 2) {
             throw new PublicChatInterlocutorException();
         }
 
+        long interlocutorUserId;
+
         if (userChats.getFirst().getUserId() == userId) {
-            long interlocutorUserId = userChats.getLast().getUserId();
-            return userRepository.getUserById(
-                interlocutorUserId
-            );
+            interlocutorUserId = userChats.getLast().getUserId();
+            return userService.getById(interlocutorUserId);
+
         }
         else if (userChats.getLast().getUserId() == userId) {
-            long interlocutorUserId = userChats.getFirst().getUserId();
-            return userRepository.getUserById(
-                    interlocutorUserId
-            );
+            interlocutorUserId = userChats.getFirst().getUserId();
+            return userService.getById(interlocutorUserId);
         }
         else {
             throw new ForeignChatInterlocutorException();
         }
     }
 
-    public Collection<ChatResponse> getUserChats (long userId) {
-        List<Chat> userChats = chatRepository.findUserChats(userId);
+    public List<Chat> getUserChats (User user) {
+        return chatRepository.findUserChats(user.getId());
+    }
+
+    public List<User> getChatParticipants (Chat chat) {
+        return chatRepository.findChatParticipants(chat.getId());
+    }
+
+    public List<ChatResponse> getUserChatsResponse (User user) {
+        List<Chat> userChats = chatRepository.findUserChats(user.getId());
 
         List<ChatResponse> result = new ArrayList<>();
 
-        for (Chat userChat : userChats) {
-            ChatResponse tempResponse = chatMapper.toChatResponse(userChat, null);
-            if (userChat.getChatType() == ChatType.PRIVATE) {
+        for (Chat chat : userChats) {
+            ChatResponse tempResponse = chatMapper.toChatResponse(chat, null);
+            if (chat.getChatType() == ChatType.PRIVATE) {
                 User interlocutor = getInterlocutor(
-                        userId,
-                        userChat.getId()
+                        user.getId(),
+                        chat.getId()
                 );
                 tempResponse.setInterlocutor(
                         userMapper.toUserResponse(
@@ -98,29 +98,19 @@ public class ChatService {
         return result;
     }
 
-    public Chat getUsersPrivateChat (long firstUserId, long secondUserId) {
-        Chat result = userChatRepository.getUsersPrivateChat(firstUserId, secondUserId);
-        return result;
-    }
-
     public Chat startChat(User firstUser, User secondUser) {
-        Chat newChat = new Chat(ChatType.PRIVATE, "");
-        save(newChat);
-
-        UserChat firstUserParticipation = new UserChat(
-                newChat,
-                firstUser
-        );
-        UserChat secondUserParticipation = new UserChat(
-                newChat,
-                secondUser
+        Chat newChat = createChat(
+                new Chat(ChatType.PRIVATE, "")
         );
 
-        userChatRepository.save(firstUserParticipation);
-        userChatRepository.save(secondUserParticipation);
-
+        userChatService.addToChat(firstUser, newChat);
+        userChatService.addToChat(secondUser, newChat);
 
         return newChat;
+    }
+
+    public Chat getById (long chatId) {
+        return chatRepository.getChatById(chatId);
     }
 
 }

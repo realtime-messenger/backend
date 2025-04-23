@@ -1,8 +1,11 @@
 package com.example.backend.service;
 
+import com.example.backend.DTO.event.NewChatEvent;
+import com.example.backend.DTO.event.NewMessageEvent;
 import com.example.backend.DTO.response.MessageExtendedResponse;
-import com.example.backend.DTO.response.MessageResponse;
 import com.example.backend.exceptions.ChatNotFoundException;
+import com.example.backend.exceptions.InternalErrorException;
+import com.example.backend.mapper.ChatMapper;
 import com.example.backend.mapper.MessageMapper;
 import com.example.backend.mapper.ReactionsMapper;
 import com.example.backend.model.chat.Chat;
@@ -16,58 +19,60 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MessageService {
 
 
     private final MessageMapper messageMapper;
-    private final ReactionsMapper reactionsMapper;
+    private final ChatMapper chatMapper;
 
     private final MessageRepository messageRepository;
-    private final UserChatRepository userChatRepository;
-    private final StatusRepository statusRepository;
-    private final ReactionRepository reactionRepository;
+
+    private final ChatService chatService;
+    private final UserChatService userChatService;
+    private final EventProducerService eventProducerService;
+    private final StatusService statusService;
+    private final ReactionService reactionService;
 
     @Autowired
-    public MessageService(MessageRepository messageRepository, MessageMapper messageMapper, ReactionsMapper reactionsMapper, UserChatRepository userChatRepository, StatusRepository statusRepository, ReactionRepository reactionRepository) {
+    public MessageService(MessageRepository messageRepository, MessageMapper messageMapper, ChatMapper chatMapper, ChatService chatService, UserChatService userChatService, EventProducerService eventProducerService, StatusService statusService, ReactionService reactionService) {
         this.messageRepository = messageRepository;
         this.messageMapper = messageMapper;
-        this.reactionsMapper = reactionsMapper;
-        this.userChatRepository = userChatRepository;
-        this.statusRepository = statusRepository;
-        this.reactionRepository = reactionRepository;
+        this.chatMapper = chatMapper;
+        this.chatService = chatService;
+        this.userChatService = userChatService;
+        this.eventProducerService = eventProducerService;
+        this.statusService = statusService;
+        this.reactionService = reactionService;
     }
 
-    public MessageExtendedResponse getMessageExtended (long userId, Message message) {
-        UserMessageStatus status = statusRepository.findMessageStatusByUserIdAndMessageId(
-                userId,
-                message.getId()
-        );
+    // Возвращает DTO сообщения с реакциями и статусом для конкретного пользователя
+    public MessageExtendedResponse getMessageExtended (User user, Message message) {
+        UserMessageStatus status = statusService.getStatus(
+                user,
+                message
+        ).orElseThrow(InternalErrorException::new);
 
-        List<UserMessageReaction> reactions = reactionRepository.findUserMessageReactionsByMessageId(
-                message.getId()
-        );
+        List<UserMessageReaction> reactions = reactionService.getReactions(message);
 
-        MessageExtendedResponse tempMessage = messageMapper.toMessageResponseExtended(
+        return messageMapper.toMessageResponseExtended(
                 message,
                 status,
                 reactions
         );
-
-        return tempMessage;
     }
 
-    public Collection<MessageExtendedResponse> getUserMessages (
-            long userId,
+    // Возвращает список DTO сообщений из чата для конкретного пользователя
+    public List<MessageExtendedResponse> getUserMessages (
+            User user,
             long chatId,
             int skip,
             int limit
     ) {
-        if (!userChatRepository.existsUserChatByUserIdAndChatId(userId, chatId)
-        ) {
+        if (!userChatService.userBelongsToChat(user.getId(), chatId)) {
             throw new ChatNotFoundException();
         }
 
@@ -80,51 +85,137 @@ public class MessageService {
         List<MessageExtendedResponse> result = new ArrayList<>();
 
         for (Message message : messages) {
-            result.add(
-                    getMessageExtended(userId, message)
-            );
+            result.add(getMessageExtended(user, message));
         }
 
         return result;
     }
 
-    public Collection<MessageExtendedResponse> getLastMessages (
-            long userId
+    // Возвращает DTO сообщения по одному из каждого чата в котором состоит пользователь
+    public List<MessageExtendedResponse> getLastMessages (
+            User user
     ) {
-        List<UserChat> userChats = userChatRepository.getUserChatsByUserId(userId);
+        List<UserChat> userChats = userChatService.getUserChats(user);
+
         List<MessageExtendedResponse> result = new ArrayList<>();
 
         for (UserChat userChat : userChats) {
-            Message message = messageRepository.findMessageByChatId(
+            Optional<Message> message = messageRepository.findMessageByChatId(
                     userChat.getChatId(),
                     0,
                     1
             );
 
+            if (message.isEmpty()) {
+                continue;
+            }
+
             result.add(
-                    getMessageExtended(userId, message)
+                    getMessageExtended(user, message.get())
             );
         }
 
         return result;
     }
 
-    public MessageExtendedResponse sendMessage (
-            User user,
+    // Только создаёт сообщение
+    public Message createMessage(
+            User sender,
             Chat chat,
             String text
     ) {
         Message newMessage = new Message(
                 chat,
-                user,
+                sender,
                 text
         );
 
-        newMessage = messageRepository.save(newMessage);
+        return messageRepository.save(newMessage);
+    }
 
-        MessageExtendedResponse result = messageMapper.toMessageResponseExtended(newMessage, false, new ArrayList<>());
+    // Создаёт статусы для всех пользователей которые могут иметь доступ к этому сообщению
+    public List<UserMessageStatus> createMessageStatuses (
+            Message message,
+            Chat chat
+    ) {
+        List<User> participants = chatService.getChatParticipants(chat);
+        return statusService.createStatus(participants, message);
+    }
 
-        return result;
+    // Отправляет сообщение пользователю в личный чат. Если чата не существует - создаёт.
+    public void sendMessagePrivate (
+            User sender,
+            User getter,
+            String text
+    ) {
+        Optional<Chat> commonChat = userChatService.getUsersPrivateChat(
+                sender.getId(),
+                getter.getId()
+        );
 
+        Chat chat;
+
+        if (commonChat.isEmpty()) {
+            chat = chatService.startChat(
+                    sender,
+                    getter
+            );
+
+            eventProducerService.produceEventToUser(
+                    sender,
+                    new NewChatEvent(chatMapper.toChatResponse(chat, sender))
+            );
+
+            eventProducerService.produceEventToUser(
+                    getter,
+                    new NewChatEvent(chatMapper.toChatResponse(chat, getter))
+            );
+        }
+        else {
+            chat = commonChat.get();
+        }
+
+        Message message = createMessage(
+                sender,
+                chat,
+                text
+        );
+
+        createMessageStatuses(
+                message,
+                chat
+        );
+
+        var response = messageMapper.toMessageResponseExtended(message, false, new ArrayList<>());
+
+        NewMessageEvent event = new NewMessageEvent(response);
+        eventProducerService.produceEventToUser(sender, event);
+        eventProducerService.produceEventToUser(getter, event);
+    }
+
+    public void sendMessageChat (
+            User user,
+            Chat chat,
+            String text
+    ) {
+        if (!userChatService.userBelongsToChat(user.getId(), chat.getId())) {
+            return;
+        }
+
+        Message message = createMessage(
+                user,
+                chat,
+                text
+        );
+
+        createMessageStatuses(
+                message,
+                chat
+        );
+
+        var response = messageMapper.toMessageResponseExtended(message, false, new ArrayList<>());
+
+        NewMessageEvent event = new NewMessageEvent(response);
+        eventProducerService.produceEventToUser(user, event);
     }
 }

@@ -59,7 +59,10 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        StompBrokerRelayRegistration relayRegistration = config.enableStompBrokerRelay("/topic/", "/queue/");
+        StompBrokerRelayRegistration relayRegistration = config.enableStompBrokerRelay(
+                "/topic/",
+                "/queue/"
+        );
 
         relayRegistration.setRelayHost(this.rabbitmqHost);
         relayRegistration.setRelayPort(Integer.parseInt(this.rabbitmqPort));

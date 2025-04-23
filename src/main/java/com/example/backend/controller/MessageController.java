@@ -1,10 +1,13 @@
 package com.example.backend.controller;
 
 import com.example.backend.DTO.response.MessageExtendedResponse;
+import com.example.backend.model.user.User;
 import com.example.backend.service.MessageService;
+import com.example.backend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,9 +26,12 @@ import java.util.Collection;
 public class MessageController {
 
     private final MessageService messageService;
+    private final UserService userService;
 
-    public MessageController(MessageService messageService) {
+    @Autowired
+    public MessageController(MessageService messageService, UserService userService) {
         this.messageService = messageService;
+        this.userService = userService;
     }
 
     @Operation(summary = "Получить сообщения чата пользователя")
@@ -38,11 +44,10 @@ public class MessageController {
             @RequestParam("limit")
             int limit
     )  {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        long userId = Long.parseLong(authentication.getName());
+        User user = userService.getCurrentUser();
 
         var result = messageService.getUserMessages(
-                userId,
+                user,
                 chatId,
                 skip,
                 limit
@@ -54,11 +59,10 @@ public class MessageController {
     @GetMapping("/lasts")
     public ResponseEntity<Collection<MessageExtendedResponse>> getLastsMessages(
     )  {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        long userId = Long.parseLong(authentication.getName());
+        User user = userService.getCurrentUser();
 
         var result = messageService.getLastMessages(
-                userId
+            user
         );
         return ResponseEntity.ok(result);
     }

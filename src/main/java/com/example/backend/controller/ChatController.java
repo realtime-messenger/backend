@@ -1,14 +1,14 @@
 package com.example.backend.controller;
 
 import com.example.backend.DTO.response.ChatResponse;
+import com.example.backend.model.user.User;
 import com.example.backend.service.ChatService;
+import com.example.backend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -21,20 +21,21 @@ import java.util.Collection;
 public class ChatController {
 
     private final ChatService chatService;
+    private final UserService userService;
 
     @Autowired
-    public ChatController(ChatService chatService) {
+    public ChatController(ChatService chatService, UserService userService) {
         this.chatService = chatService;
+        this.userService = userService;
     }
 
 
     @Operation(summary = "Получить чаты пользователя")
     @GetMapping("")
     public ResponseEntity<Collection<ChatResponse>> getChats()  {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        long id = Long.parseLong(authentication.getName());
+        User user = userService.getCurrentUser();
 
-        var result = chatService.getUserChats(id);
+        var result = chatService.getUserChatsResponse(user);
 
         return ResponseEntity.ok(result);
     }

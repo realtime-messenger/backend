@@ -12,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Repository
@@ -37,24 +38,8 @@ public interface UserChatRepository extends JpaRepository<UserChat, Long> {
             GROUP BY c.id
             HAVING count(c.id) = 2
             """)
-    Chat getUsersPrivateChat(
+    Optional<Chat> getUsersPrivateChat(
             @Param("firstUserId") long firstUserId,
             @Param("secondUserId") long secondUserId
     );
-    /*
-    * SELECT user_chat.chat_id
-    * FROM user_chat uc
-    * JOIN chat ON uc.chatId = chat.id
-    * WHERE uc.userId IN (:firstUserId, :secondUserId)
-    * AND chat.type=1
-    * GROUP BY uc.chatId
-    *
-    *
-    *
-    *
-    *
-    *
-    *
-    *
-    * */
 }

@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Long> {
@@ -39,7 +40,7 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
             LIMIT :limit
             OFFSET :skip
             """)
-    Message findMessageByChatId(
+    Optional<Message> findMessageByChatId(
             @Param("chatId")
             long chatId,
             @Param("skip")

@@ -20,9 +20,6 @@ public class EventProducerService {
     @Autowired
     public EventProducerService(SimpMessagingTemplate template, ObjectMapper objectMapper) {
         this.template = template;
-//        this.objectMapper = new ObjectMapper();
-//        this.objectMapper.registerModule(new JavaTimeModule());
-
         this.objectMapper = objectMapper;
     }
 
@@ -51,9 +48,7 @@ public class EventProducerService {
             System.out.println(e.getMessage());
             return;
         }
-        System.out.println("AYO");
-        System.out.println(json);
-        template.convertAndSend("/queue/user/" + user.getId(), json);
+        template.convertAndSend("/queue/" + "user" + user.getId(), json);
     }
 
     public void produceEventToChat(
@@ -67,7 +62,7 @@ public class EventProducerService {
             System.out.println(e.getMessage());
             return;
         }
-        template.convertAndSend("/queue/chat/" + chat.getId(), json);
+        template.convertAndSend("/queue/" + "user" + chat.getId(), json);
     }
 
     public void produceEvent(

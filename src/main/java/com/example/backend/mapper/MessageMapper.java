@@ -10,6 +10,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.List;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
@@ -24,7 +25,7 @@ public interface MessageMapper {
     MessageExtendedResponse toMessageResponseExtended(
             Message message,
             UserMessageStatus userMessageStatus,
-            List<UserMessageReaction> reactions
+            Collection<UserMessageReaction> reactions
     );
 
     @Mapping(target = "id", source = "message.id")
@@ -34,7 +35,7 @@ public interface MessageMapper {
     MessageExtendedResponse toMessageResponseExtended(
             Message message,
             boolean isRead,
-            List<UserMessageReaction> reactions
+            Collection<UserMessageReaction> reactions
     );
 
 

@@ -27,6 +27,10 @@ public class MessageExtendedResponse extends MessageResponse {
         this.reactions = reactions;
     }
 
+    public boolean getIsRead () {
+        return this.isRead;
+    }
+
     public void setIsRead(boolean isRead) {
         this.isRead=isRead;
     }
