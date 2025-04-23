@@ -5,9 +5,9 @@ import com.example.backend.DTO.event.NewMessageEvent;
 import com.example.backend.DTO.response.MessageExtendedResponse;
 import com.example.backend.exceptions.ChatNotFoundException;
 import com.example.backend.exceptions.InternalErrorException;
+import com.example.backend.exceptions.MessageNotFoundException;
 import com.example.backend.mapper.ChatMapper;
 import com.example.backend.mapper.MessageMapper;
-import com.example.backend.mapper.ReactionsMapper;
 import com.example.backend.model.chat.Chat;
 import com.example.backend.model.message.Message;
 import com.example.backend.model.user.User;
@@ -36,9 +36,10 @@ public class MessageService {
     private final EventProducerService eventProducerService;
     private final StatusService statusService;
     private final ReactionService reactionService;
+    private final UserService userService;
 
     @Autowired
-    public MessageService(MessageRepository messageRepository, MessageMapper messageMapper, ChatMapper chatMapper, ChatService chatService, UserChatService userChatService, EventProducerService eventProducerService, StatusService statusService, ReactionService reactionService) {
+    public MessageService(MessageRepository messageRepository, MessageMapper messageMapper, ChatMapper chatMapper, ChatService chatService, UserChatService userChatService, EventProducerService eventProducerService, StatusService statusService, ReactionService reactionService, UserService userService) {
         this.messageRepository = messageRepository;
         this.messageMapper = messageMapper;
         this.chatMapper = chatMapper;
@@ -47,6 +48,15 @@ public class MessageService {
         this.eventProducerService = eventProducerService;
         this.statusService = statusService;
         this.reactionService = reactionService;
+        this.userService = userService;
+    }
+
+    public Message getById(Long id) {
+        return messageRepository.findById(id)
+                .orElseThrow(
+                        MessageNotFoundException::new
+                );
+
     }
 
     // Возвращает DTO сообщения с реакциями и статусом для конкретного пользователя
@@ -58,8 +68,11 @@ public class MessageService {
 
         List<UserMessageReaction> reactions = reactionService.getReactions(message);
 
+        User messageAuthor = userService.getById(message.getUserId());
+
         return messageMapper.toMessageResponseExtended(
                 message,
+                messageAuthor,
                 status,
                 reactions
         );
@@ -186,7 +199,7 @@ public class MessageService {
                 chat
         );
 
-        var response = messageMapper.toMessageResponseExtended(message, false, new ArrayList<>());
+        var response = messageMapper.toMessageResponseExtended(message, sender, false, new ArrayList<>());
 
         NewMessageEvent event = new NewMessageEvent(response);
         eventProducerService.produceEventToUser(sender, event);
@@ -213,7 +226,7 @@ public class MessageService {
                 chat
         );
 
-        var response = messageMapper.toMessageResponseExtended(message, false, new ArrayList<>());
+        var response = messageMapper.toMessageResponseExtended(message, user, false, new ArrayList<>());
         NewMessageEvent event = new NewMessageEvent(response);
 
         List<User> chatParticipants = chatService.getChatParticipants(chat);
