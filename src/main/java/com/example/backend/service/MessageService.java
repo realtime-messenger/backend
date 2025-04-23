@@ -163,12 +163,12 @@ public class MessageService {
 
             eventProducerService.produceEventToUser(
                     sender,
-                    new NewChatEvent(chatMapper.toChatResponse(chat, sender))
+                    new NewChatEvent(chatMapper.toChatResponse(chat, getter))
             );
 
             eventProducerService.produceEventToUser(
                     getter,
-                    new NewChatEvent(chatMapper.toChatResponse(chat, getter))
+                    new NewChatEvent(chatMapper.toChatResponse(chat, sender))
             );
         }
         else {
@@ -214,8 +214,14 @@ public class MessageService {
         );
 
         var response = messageMapper.toMessageResponseExtended(message, false, new ArrayList<>());
-
         NewMessageEvent event = new NewMessageEvent(response);
-        eventProducerService.produceEventToUser(user, event);
+
+        List<User> chatParticipants = chatService.getChatParticipants(chat);
+
+        chatParticipants.forEach(
+                (User chatParticipant) -> {
+                    eventProducerService.produceEventToUser(chatParticipant, event);
+                }
+        );
     }
 }
