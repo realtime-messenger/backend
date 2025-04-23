@@ -1,23 +1,16 @@
 package com.example.backend.controller;
 
 import com.example.backend.DTO.command.*;
-import com.example.backend.DTO.event.NewChatEvent;
-import com.example.backend.DTO.event.NewMessageEvent;
-import com.example.backend.DTO.response.MessageExtendedResponse;
 import com.example.backend.mapper.ChatMapper;
 import com.example.backend.model.chat.Chat;
+import com.example.backend.model.message.Message;
 import com.example.backend.model.user.User;
-import com.example.backend.service.ChatService;
-import com.example.backend.service.EventProducerService;
-import com.example.backend.service.MessageService;
-import com.example.backend.service.UserService;
+import com.example.backend.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
-
-import java.util.Optional;
 
 
 @Controller
@@ -27,15 +20,19 @@ public class WebSocketController {
     private final ChatMapper chatMapper;
     private final UserService userService;
     private final EventProducerService eventProducerService;
+    private final UserChatService userChatService;
+    private final ReactionService reactionService;
 
 
     @Autowired
-    public WebSocketController(ChatService chatService, MessageService messageService, ChatMapper chatMapper, UserService userService, EventProducerService eventProducerService) {
+    public WebSocketController(ChatService chatService, MessageService messageService, ChatMapper chatMapper, UserService userService, EventProducerService eventProducerService, UserChatService userChatService, ReactionService reactionService) {
         this.chatService = chatService;
         this.messageService = messageService;
         this.chatMapper = chatMapper;
         this.userService = userService;
         this.eventProducerService = eventProducerService;
+        this.userChatService = userChatService;
+        this.reactionService = reactionService;
     }
 
     @MessageMapping("/start-chat")
@@ -109,7 +106,9 @@ public class WebSocketController {
             SimpMessageHeaderAccessor headerAccessor
 
     ) throws Exception {
-        String userId = headerAccessor.getSessionAttributes().get("userId").toString();
+
+
+
 
         // если пользователь удаляет сообщения неглобально, то нужно пометить его в базе данных как удалённый у него
         // и отослать ивент об удалении сообщения всем клиентам с этим userId
@@ -140,15 +139,21 @@ public class WebSocketController {
             SimpMessageHeaderAccessor headerAccessor
 
     ) throws Exception {
-        String userId = headerAccessor.getSessionAttributes().get("userId").toString();
+        long userId = Long.parseLong(headerAccessor.getSessionAttributes().get("userId").toString());
 
-        // проверять что пользователь может вообще ставить реакции на это сообщение
-        // если может то проверять нет ли реакции этого пользователя на этом сообщении
-        // если нет то ставить, если есть то заменять, если есть и уже такая же то игнорировать
+        User user = userService.getById(userId);
+        Message message = messageService.getById(request.getMessageId());
 
-        // возможно не проверять наличие текущих реакций
+        if (!userChatService.userBelongsToChat(user.getId(), message.getChatId())) {
+            return;
+        }
 
-        // отсылать всем причастным ивент о том что на это сообщении появилась реакция
+        reactionService.setReaction(
+                message,
+                user,
+                message.getChatId(),
+                request.getReaction()
+        );
     }
 
     @MessageMapping("/delete-reaction")
