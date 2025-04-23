@@ -14,46 +14,17 @@ import org.springframework.stereotype.Controller;
 
 
 @Controller
-public class WebSocketController {
+public class WsMessageController {
     private final ChatService chatService;
     private final MessageService messageService;
-    private final ChatMapper chatMapper;
     private final UserService userService;
-    private final EventProducerService eventProducerService;
-    private final UserChatService userChatService;
-    private final ReactionService reactionService;
 
 
     @Autowired
-    public WebSocketController(ChatService chatService, MessageService messageService, ChatMapper chatMapper, UserService userService, EventProducerService eventProducerService, UserChatService userChatService, ReactionService reactionService) {
+    public WsMessageController(ChatService chatService, MessageService messageService, UserService userService) {
         this.chatService = chatService;
         this.messageService = messageService;
-        this.chatMapper = chatMapper;
         this.userService = userService;
-        this.eventProducerService = eventProducerService;
-        this.userChatService = userChatService;
-        this.reactionService = reactionService;
-    }
-
-    @MessageMapping("/start-chat")
-    public void startChat(
-            @Payload
-            StartChatRequest request,
-            SimpMessageHeaderAccessor headerAccessor
-
-    ) throws Exception {
-        String userId = headerAccessor.getSessionAttributes().get("userId").toString();
-
-        // написать сервис проверяющий наличие приватного чата с такими пользователями
-        // написать сервис создающий тако й чат
-        // отправлять ивент о создании такого чата всем кого он касается
-
-        System.out.println(userId);
-
-        eventProducerService.produceEvent(
-                "/topic/broadcast",
-                "hi all"
-        );
     }
 
     @MessageMapping("/send-message-chat")
@@ -107,9 +78,6 @@ public class WebSocketController {
 
     ) throws Exception {
 
-
-
-
         // если пользователь удаляет сообщения неглобально, то нужно пометить его в базе данных как удалённый у него
         // и отослать ивент об удалении сообщения всем клиентам с этим userId
 
@@ -131,46 +99,4 @@ public class WebSocketController {
         // при прочтении сообщения отсылать ивент хозяину сообщения о том что его сообщение прочтено
         // и клиентам этого userId о том что это сообщение прочтено.
     }
-
-    @MessageMapping("/set-reaction")
-    public void setReaction(
-            @Payload
-            SetReactionRequest request,
-            SimpMessageHeaderAccessor headerAccessor
-
-    ) throws Exception {
-        long userId = Long.parseLong(headerAccessor.getSessionAttributes().get("userId").toString());
-
-        User user = userService.getById(userId);
-        Message message = messageService.getById(request.getMessageId());
-
-        if (!userChatService.userBelongsToChat(user.getId(), message.getChatId())) {
-            return;
-        }
-
-        reactionService.setReaction(
-                message,
-                user,
-                message.getChatId(),
-                request.getReaction()
-        );
-    }
-
-    @MessageMapping("/delete-reaction")
-    public void deleteReaction(
-            @Payload
-            DeleteReactionRequest request,
-            SimpMessageHeaderAccessor headerAccessor
-
-    ) throws Exception {
-        String userId = headerAccessor.getSessionAttributes().get("userId").toString();
-
-        // проверять что эта реакция принадлежит этому пользователю
-
-        // удалять реакцию и отсылать ивент всем причастным
-
-    }
-
-
-
 }
