@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public class MessageResponse {
     private long id;
     private long chatId;
-    private long userId;
+    private UserResponse user;
     private String text;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -24,13 +24,13 @@ public class MessageResponse {
     public MessageResponse(
             long id,
             long chatId,
-            long userId,
+            UserResponse user,
             String text,
             LocalDateTime dateCreated
     ) {
         this.id=id;
         this.chatId=chatId;
-        this.userId=userId;
+        this.user=user;
         this.text=text;
         this.dateCreated=dateCreated;
     }

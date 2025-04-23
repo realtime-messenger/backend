@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class DeleteReactionRequest {
 
-    private long userMessageReactionId;
+    private long reactionId;
 
     public DeleteReactionRequest() {
     }

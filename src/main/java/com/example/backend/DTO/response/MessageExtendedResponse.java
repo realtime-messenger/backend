@@ -2,7 +2,6 @@ package com.example.backend.DTO.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,13 +15,13 @@ public class MessageExtendedResponse extends MessageResponse {
     public MessageExtendedResponse(
             long id,
             long chatId,
-            long userId,
+            UserResponse user,
             String text,
             LocalDateTime dateCreated,
             boolean isRead,
             List<ReactionResponse> reactions
     ) {
-        super(id, chatId, userId, text, dateCreated);
+        super(id, chatId, user, text, dateCreated);
         this.isRead = isRead;
         this.reactions = reactions;
     }

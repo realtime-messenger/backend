@@ -1,6 +1,5 @@
 package com.example.backend.DTO.event;
 
-import com.example.backend.DTO.response.MessageResponse;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
