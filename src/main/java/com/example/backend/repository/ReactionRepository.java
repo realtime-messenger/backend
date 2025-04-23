@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface ReactionRepository extends JpaRepository<UserMessageReaction, Long> {
     List<UserMessageReaction> findUserMessageReactionsByMessageId(long messageId);
+
+    UserMessageReaction getUserMessageReactionsById(Long id);
 }

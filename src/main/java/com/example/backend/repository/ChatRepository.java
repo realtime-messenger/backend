@@ -33,4 +33,13 @@ public interface ChatRepository extends JpaRepository<Chat, Long> {
     Optional<Chat> findChatById(Long id);
 
     Chat getChatById(Long id);
+
+
+    @Query("""
+            SELECT message.chat
+            FROM user_message_reaction reaction
+            JOIN reaction.message message
+            WHERE reaction.id = :reactionId
+            """)
+    Chat getChatByReactionId(@Param("reactionId") long reactionId);
 }
