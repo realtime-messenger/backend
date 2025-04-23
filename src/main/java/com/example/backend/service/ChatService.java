@@ -9,6 +9,7 @@ import com.example.backend.model.chat.Chat;
 import com.example.backend.model.chat.ChatType;
 import com.example.backend.model.user.User;
 import com.example.backend.model.userChat.UserChat;
+import com.example.backend.model.userMessageReaction.UserMessageReaction;
 import com.example.backend.repository.ChatRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -73,6 +74,10 @@ public class ChatService {
         return chatRepository.findChatParticipants(chat.getId());
     }
 
+    public List<User> getChatParticipants (long chatId) {
+        return chatRepository.findChatParticipants(chatId);
+    }
+
     public List<ChatResponse> getUserChatsResponse (User user) {
         List<Chat> userChats = chatRepository.findUserChats(user.getId());
 
@@ -111,6 +116,10 @@ public class ChatService {
 
     public Chat getById (long chatId) {
         return chatRepository.getChatById(chatId);
+    }
+
+    public Chat getById (UserMessageReaction reaction) {
+        return chatRepository.getChatByReactionId(reaction.getId());
     }
 
 }
