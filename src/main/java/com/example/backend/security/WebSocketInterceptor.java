@@ -2,7 +2,6 @@ package com.example.backend.security;
 
 
 import com.example.backend.service.JwtService;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.socket.WebSocketHandler;
