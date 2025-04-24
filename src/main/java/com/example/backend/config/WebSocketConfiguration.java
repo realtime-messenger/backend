@@ -1,10 +1,12 @@
 package com.example.backend.config;
 
+import com.example.backend.security.STOMPChannelInterceptor;
 import com.example.backend.security.WebSocketInterceptor;
 import com.example.backend.service.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.messaging.simp.config.StompBrokerRelayRegistration;
 import org.springframework.web.socket.config.annotation.*;
@@ -62,8 +64,11 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
                 .setAllowedOrigins("*")
-                .addInterceptors(new WebSocketInterceptor(jwtService))
-        ;
+                .addInterceptors(new WebSocketInterceptor(jwtService));
     }
 
+    @Override
+    public void configureClientInboundChannel(ChannelRegistration registration) {
+        registration.interceptors(new STOMPChannelInterceptor());
+    }
 }
