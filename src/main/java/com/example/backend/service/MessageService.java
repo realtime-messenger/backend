@@ -1,5 +1,6 @@
 package com.example.backend.service;
 
+import com.example.backend.DTO.event.DeleteMessageEvent;
 import com.example.backend.DTO.event.NewChatEvent;
 import com.example.backend.DTO.event.NewMessageEvent;
 import com.example.backend.DTO.response.MessageExtendedResponse;
@@ -237,4 +238,36 @@ public class MessageService {
                 }
         );
     }
+
+    public void deleteMessage (
+            Message message,
+            User user
+    ) {
+        statusService.MarkDeleted(message, user);
+
+        DeleteMessageEvent event = new DeleteMessageEvent();
+        event.setMessageId(message.getId());
+
+        eventProducerService.produceEventToUser(user, event);
+    }
+
+
+    public void deleteMessage (
+            Message message,
+            Chat chat
+    ) {
+        statusService.MarkDeleted(message);
+
+        DeleteMessageEvent event = new DeleteMessageEvent();
+        event.setMessageId(message.getId());
+
+        List<User> chatParticipants = chatService.getChatParticipants(chat);
+
+        chatParticipants.forEach(
+                (User chatParticipant) -> {
+                    eventProducerService.produceEventToUser(chatParticipant, event);
+                }
+        );
+    }
+
 }

@@ -9,6 +9,5 @@ import lombok.Setter;
 @Setter
 public class DeleteMessageEvent implements IEvent {
     protected EventType type = EventType.DeleteMessage;
-    private long chatId;
     private long messageId;
 }

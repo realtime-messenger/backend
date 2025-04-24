@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ChatService {
@@ -118,8 +117,7 @@ public class ChatService {
         return chatRepository.getChatById(chatId);
     }
 
-    public Chat getById (UserMessageReaction reaction) {
+    public Chat getByReaction(UserMessageReaction reaction) {
         return chatRepository.getChatByReactionId(reaction.getId());
     }
-
 }

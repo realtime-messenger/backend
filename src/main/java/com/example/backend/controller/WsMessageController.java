@@ -12,19 +12,23 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
 
+import java.util.Objects;
+
 
 @Controller
 public class WsMessageController {
     private final ChatService chatService;
     private final MessageService messageService;
     private final UserService userService;
+    private final StatusService statusService;
 
 
     @Autowired
-    public WsMessageController(ChatService chatService, MessageService messageService, UserService userService) {
+    public WsMessageController(ChatService chatService, MessageService messageService, UserService userService, StatusService statusService) {
         this.chatService = chatService;
         this.messageService = messageService;
         this.userService = userService;
+        this.statusService = statusService;
     }
 
     @MessageMapping("/send-message-chat")
@@ -77,6 +81,27 @@ public class WsMessageController {
             SimpMessageHeaderAccessor headerAccessor
 
     ) throws Exception {
+
+        long userId = Long.parseLong(headerAccessor.getSessionAttributes().get("userId").toString());
+        User user = userService.getById(userId);
+
+        Message message = messageService.getById(request.getMessageId());
+
+        if (request.isGlobal() && !Objects.equals(message.getUserId(), user.getId())) {
+            return;
+        }
+
+        Chat chat = chatService.getById(
+                message.getChatId()
+        );
+        
+
+        if (request.isGlobal()) {
+            messageService.deleteMessage(message, chat);
+        }
+        else {
+            messageService.deleteMessage(message, user);
+        }
 
         // если пользователь удаляет сообщения неглобально, то нужно пометить его в базе данных как удалённый у него
         // и отослать ивент об удалении сообщения всем клиентам с этим userId

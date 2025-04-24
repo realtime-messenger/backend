@@ -43,4 +43,8 @@ public class UserMessageStatus extends BaseEntity {
         this.isRead = false;
         this.dateCreated = LocalDateTime.now();
     }
+
+    public void setIsDeleted (boolean isDeleted) {
+        this.isDeleted=isDeleted;
+    }
 }

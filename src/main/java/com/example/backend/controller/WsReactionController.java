@@ -1,7 +1,6 @@
 package com.example.backend.controller;
 
 import com.example.backend.DTO.command.*;
-import com.example.backend.mapper.ChatMapper;
 import com.example.backend.model.chat.Chat;
 import com.example.backend.model.message.Message;
 import com.example.backend.model.user.User;
@@ -76,7 +75,7 @@ public class WsReactionController {
         User user = userService.getById(userId);
         UserMessageReaction reaction = reactionService.getById(request.getReactionId());
 
-        Chat chat = chatService.getById(reaction);
+        Chat chat = chatService.getByReaction(reaction);
 
         if (!Objects.equals(reaction.getUserId(), user.getId())) {
             return;
