@@ -60,6 +60,10 @@ public class WsMessageController {
     ) throws Exception {
         long userId = Long.parseLong(headerAccessor.getSessionAttributes().get("userId").toString());
 
+        if (request.getText().isEmpty()) {
+            return;
+        }
+
         if (request.getUserId() == userId) {
             return;
         }
