@@ -36,6 +36,8 @@ public class EventProducerService {
         template.convertAndSend(destination, json);
     }
 
+    // Клиенты подписываются на топик /topic/user/{userId} что бы получать ивенты адресованные персонально им
+    // Пример: Был создан новый чат
     public void produceEventToUser(
             User user,
             IEvent event
@@ -50,6 +52,10 @@ public class EventProducerService {
         template.convertAndSend("/topic/" + "user" + user.getId(), json);
     }
 
+    // Клиенты подписываются на топик /topic/chat/{chatId} что бы получать ивенты которые нужно получить всем участникам
+    // чата с chatId={chatId}
+    // Пример: Новое сообщение в чате; Удалено сообщение у всех участников чата; Изменились реакции; Пользователь начал
+    // печатать в чат
     public void produceEventToChat(
             Chat chat,
             IEvent event
@@ -61,7 +67,23 @@ public class EventProducerService {
             System.out.println(e.getMessage());
             return;
         }
-        template.convertAndSend("/topic/" + "user" + chat.getId(), json);
+        template.convertAndSend("/topic/" + "chat" + chat.getId(), json);
+    }
+
+    // Клиенты подписываются на топик /topic/user-online/{userId} что бы получать ивенты об онлайне конкретного
+    // пользователя
+    public void produceEventToOnlineTopic(
+            long userId,
+            IEvent event
+    ) {
+        String json;
+        try {
+            json = objectMapper.writeValueAsString(event);
+        } catch (JsonProcessingException e) {
+            System.out.println(e.getMessage());
+            return;
+        }
+        template.convertAndSend("/topic/" + "user-online" + userId, json);
     }
 
     public void produceEvent(
