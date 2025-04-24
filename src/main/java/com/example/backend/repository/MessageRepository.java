@@ -18,6 +18,28 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
     @Query("""
             SELECT m
             FROM message m
+            JOIN user_message_status ums ON ums.messageId = m.id
+            WHERE m.chatId = :chatId
+            AND ums.userId = :userId
+            AND ums.isDeleted = false
+            ORDER BY m.dateCreated DESC
+            LIMIT :limit
+            OFFSET :skip
+            """)
+    List<Message> findNonDeletedMessagesByChatId(
+            @Param("chatId")
+            long chatId,
+            @Param("userId")
+            long userId,
+            @Param("skip")
+            long skip,
+            @Param("limit")
+            long limit
+    );
+
+    @Query("""
+            SELECT m
+            FROM message m
             WHERE m.chatId = :chatId
             ORDER BY m.dateCreated DESC
             LIMIT :limit
@@ -35,7 +57,10 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
     @Query("""
             SELECT m
             FROM message m
+            JOIN user_message_status ums ON ums.messageId = m.id
             WHERE m.chatId = :chatId
+            AND ums.userId = :userId
+            AND ums.isDeleted = false
             ORDER BY m.dateCreated DESC
             LIMIT :limit
             OFFSET :skip
@@ -43,6 +68,8 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
     Optional<Message> findMessageByChatId(
             @Param("chatId")
             long chatId,
+            @Param("userId")
+            long userId,
             @Param("skip")
             long skip,
             @Param("limit")

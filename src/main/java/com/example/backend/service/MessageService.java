@@ -90,8 +90,9 @@ public class MessageService {
             throw new ChatNotFoundException();
         }
 
-        List<Message> messages = messageRepository.findMessagesByChatId(
+        List<Message> messages = messageRepository.findNonDeletedMessagesByChatId(
                 chatId,
+                user.getId(),
                 skip,
                 limit
         );
@@ -116,6 +117,7 @@ public class MessageService {
         for (UserChat userChat : userChats) {
             Optional<Message> message = messageRepository.findMessageByChatId(
                     userChat.getChatId(),
+                    user.getId(),
                     0,
                     1
             );

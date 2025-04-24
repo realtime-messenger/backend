@@ -44,8 +44,6 @@ public class MessageController {
     )  {
         User user = userService.getCurrentUser();
 
-        // TODO ignore deleted messages
-
         var result = messageService.getUserMessages(
                 user,
                 chatId,
@@ -60,8 +58,6 @@ public class MessageController {
     public ResponseEntity<Collection<MessageExtendedResponse>> getLastsMessages(
     )  {
         User user = userService.getCurrentUser();
-
-        // TODO ignore deleted messages
 
         var result = messageService.getLastMessages(
             user
