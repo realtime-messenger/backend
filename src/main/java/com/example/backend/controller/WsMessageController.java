@@ -1,7 +1,6 @@
 package com.example.backend.controller;
 
 import com.example.backend.DTO.command.*;
-import com.example.backend.mapper.ChatMapper;
 import com.example.backend.model.chat.Chat;
 import com.example.backend.model.message.Message;
 import com.example.backend.model.user.User;
@@ -20,15 +19,13 @@ public class WsMessageController {
     private final ChatService chatService;
     private final MessageService messageService;
     private final UserService userService;
-    private final StatusService statusService;
 
 
     @Autowired
-    public WsMessageController(ChatService chatService, MessageService messageService, UserService userService, StatusService statusService) {
+    public WsMessageController(ChatService chatService, MessageService messageService, UserService userService) {
         this.chatService = chatService;
         this.messageService = messageService;
         this.userService = userService;
-        this.statusService = statusService;
     }
 
     @MessageMapping("/send-message-chat")
@@ -39,6 +36,10 @@ public class WsMessageController {
 
     ) throws Exception {
         long userId = Long.parseLong(headerAccessor.getSessionAttributes().get("userId").toString());
+
+        if (request.getText().isEmpty()) {
+            return;
+        }
 
         User user = userService.getById(userId);
 
@@ -106,12 +107,6 @@ public class WsMessageController {
         else {
             messageService.deleteMessage(message, user);
         }
-
-        // если пользователь удаляет сообщения неглобально, то нужно пометить его в базе данных как удалённый у него
-        // и отослать ивент об удалении сообщения всем клиентам с этим userId
-
-        // если пользователь удаляет сообщение глобально, то нужно проверить может ли он вообще так делать
-        // пометить сообщение удалённым у всех и отослать всем ивент об его удалении
     }
 
     @MessageMapping("/read-message")
@@ -122,7 +117,7 @@ public class WsMessageController {
 
     ) throws Exception {
         String userId = headerAccessor.getSessionAttributes().get("userId").toString();
-
+        // TODO
         // проверять, может ли пользователь читать это сообщение, проверять что это не его собственное сообщение
 
         // при прочтении сообщения отсылать ивент хозяину сообщения о том что его сообщение прочтено
