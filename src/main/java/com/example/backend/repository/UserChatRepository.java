@@ -2,7 +2,6 @@ package com.example.backend.repository;
 
 
 import com.example.backend.model.chat.Chat;
-import com.example.backend.model.message.Message;
 import com.example.backend.model.user.User;
 import com.example.backend.model.userChat.UserChat;
 import jakarta.validation.constraints.NotNull;

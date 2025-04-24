@@ -1,6 +1,5 @@
 package com.example.backend.service;
 
-import com.example.backend.model.chat.Chat;
 import com.example.backend.model.message.Message;
 import com.example.backend.model.user.User;
 import com.example.backend.model.userMessageStatus.UserMessageStatus;

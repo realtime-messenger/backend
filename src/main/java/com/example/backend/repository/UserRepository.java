@@ -1,7 +1,6 @@
 package com.example.backend.repository;
 
 
-import com.example.backend.model.message.Message;
 import com.example.backend.model.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

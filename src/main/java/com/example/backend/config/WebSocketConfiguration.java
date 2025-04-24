@@ -2,32 +2,12 @@ package com.example.backend.config;
 
 import com.example.backend.security.WebSocketInterceptor;
 import com.example.backend.service.JwtService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
-import jakarta.websocket.OnError;
-import jakarta.websocket.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.converter.DefaultContentTypeResolver;
-import org.springframework.messaging.converter.MappingJackson2MessageConverter;
-import org.springframework.messaging.converter.MessageConverter;
-import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.messaging.simp.config.StompBrokerRelayRegistration;
-import org.springframework.messaging.simp.stomp.StompCommand;
-import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
-import org.springframework.messaging.support.ChannelInterceptor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.socket.config.annotation.*;
-
-import java.io.IOException;
-import java.util.List;
 
 @Configuration
 @EnableWebSocketMessageBroker

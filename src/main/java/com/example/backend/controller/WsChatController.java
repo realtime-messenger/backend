@@ -1,10 +1,6 @@
 package com.example.backend.controller;
 
 import com.example.backend.DTO.command.*;
-import com.example.backend.mapper.ChatMapper;
-import com.example.backend.model.chat.Chat;
-import com.example.backend.model.message.Message;
-import com.example.backend.model.user.User;
 import com.example.backend.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;

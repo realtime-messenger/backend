@@ -41,6 +41,7 @@ public class UserController {
        return userService.getUsersAlike(query);
     }
 
+    @Deprecated
     @GetMapping("/myId")
     public IdResponse getMyUserId () {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
