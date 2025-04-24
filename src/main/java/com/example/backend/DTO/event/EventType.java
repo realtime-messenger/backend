@@ -6,5 +6,7 @@ public enum EventType {
     DeleteMessage,
     NewReaction,
     DeleteReaction,
-    MessageRead
+    MessageRead,
+    UserTyping,
+    UserOnline
 }
