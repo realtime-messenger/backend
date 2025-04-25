@@ -41,6 +41,10 @@ public class WsMessageController {
             return;
         }
 
+        if (request.getText().length() > 200) {
+            return;
+        }
+
         User user = userService.getById(userId);
 
         Chat chat = chatService.getById(request.getChatId());
@@ -62,6 +66,10 @@ public class WsMessageController {
         long userId = Long.parseLong(headerAccessor.getSessionAttributes().get("userId").toString());
 
         if (request.getText().isEmpty()) {
+            return;
+        }
+
+        if (request.getText().length() > 200) {
             return;
         }
 
