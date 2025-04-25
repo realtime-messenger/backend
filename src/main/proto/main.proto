@@ -1,0 +1,21 @@
+syntax = "proto3";
+package onlineTracker;
+option java_package = "com.proto.onlineTracker";
+option java_multiple_files = true;
+
+service OnlineTracker {
+  rpc onConnect (ConnectRequest) returns (Void) {};
+  rpc onDisconnect (DisconnectRequest) returns (Void) {};
+}
+
+message ConnectRequest {
+  string sessionId = 1;
+  uint64 userId = 2;
+}
+
+message DisconnectRequest {
+  string sessionId = 1;
+  uint64 userId = 2;
+}
+
+message Void {}

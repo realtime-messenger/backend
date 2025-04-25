@@ -3,6 +3,7 @@ package com.example.backend.config;
 import com.example.backend.security.STOMPChannelInterceptor;
 import com.example.backend.security.WebSocketInterceptor;
 import com.example.backend.service.JwtService;
+import com.example.backend.service.OnlineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +22,7 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
     private final String rabbitmqPort;
     private final String rabbitmqUsername;
     private final String rabbitmqPassword;
+    private final OnlineService onlineService;
 
 
     @Autowired
@@ -29,14 +31,15 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
             @Value("${rabbitmq.host}") String rabbitmqHost,
             @Value("${rabbitmq.port}") String rabbitmqPort,
             @Value("${rabbitmq.username}") String rabbitmqUsername,
-            @Value("${rabbitmq.password}") String rabbitmqPassword
-    ) {
+            @Value("${rabbitmq.password}") String rabbitmqPassword,
+            OnlineService onlineService) {
 
         this.jwtService = jwtService;
         this.rabbitmqHost = rabbitmqHost;
         this.rabbitmqPort = rabbitmqPort;
         this.rabbitmqUsername = rabbitmqUsername;
         this.rabbitmqPassword = rabbitmqPassword;
+        this.onlineService = onlineService;
     }
 
     @Override
@@ -69,6 +72,6 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
 
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
-        registration.interceptors(new STOMPChannelInterceptor());
+        registration.interceptors(new STOMPChannelInterceptor(onlineService));
     }
 }

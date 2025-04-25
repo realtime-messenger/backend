@@ -1,5 +1,6 @@
 package com.example.backend.security;
 
+import com.example.backend.service.OnlineService;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.SimpMessageType;
@@ -7,7 +8,14 @@ import org.springframework.messaging.support.ChannelInterceptor;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+
 public class STOMPChannelInterceptor implements ChannelInterceptor {
+
+    private final OnlineService onlineService;
+
+    public STOMPChannelInterceptor(OnlineService onlineService) {
+        this.onlineService = onlineService;
+    }
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
@@ -18,27 +26,18 @@ public class STOMPChannelInterceptor implements ChannelInterceptor {
         String sessionId = (String) message.getHeaders().get("simpSessionId");
 
         if (messageType == SimpMessageType.CONNECT) {
-            onUserConnect(userId, sessionId);
+            onlineService.pingUserOnline(
+                    userId,
+                    sessionId
+            );
         }
         if (messageType == SimpMessageType.DISCONNECT) {
-            onUserDisconnect(userId, sessionId);
+            onlineService.pingUserOffline(
+                    userId,
+                    sessionId
+            );
         }
 
         return message;
-    }
-
-
-    public void onUserConnect (
-            long userId,
-            String sessionId
-    ) {
-        System.out.println("user with userid and sessionId connected " + userId + " " + sessionId);
-    }
-
-    public void onUserDisconnect(
-            long userId,
-            String sessionId
-    ) {
-        System.out.println("user with userid and sessionId disconnected " + userId + " " + sessionId);
     }
 }
