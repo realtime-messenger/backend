@@ -11,7 +11,11 @@ public class CorsConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
 
-        final List<String> allowedOrigins = List.of("http://localhost:5173", "http://192.168.0.13:5173");
+        final List<String> allowedOrigins = List.of(
+                "http://localhost:5173",
+                "http://192.168.0.13:5173",
+                "https://messenger.gladyshdd.ru"
+        );
         final List<String> allowedMethods = List.of("HEAD", "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS");
         final List<String> allowedHeaders = List.of("*");
         final boolean allowCredentials = true;
