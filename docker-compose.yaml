@@ -45,6 +45,18 @@ services:
     env_file:
       - .env
 
+  mongo:
+    container_name: ${COMPOSE_PROJECT_NAME}-mongo
+    image: mongo
+    restart: always
+    ports:
+      - "127.0.0.1:27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    env_file:
+      - .env
+
 
   online-tracking-service:
     container_name: ${COMPOSE_PROJECT_NAME}-ots
