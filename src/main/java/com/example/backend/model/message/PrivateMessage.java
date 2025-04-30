@@ -16,13 +16,11 @@ import java.util.List;
 @Setter
 @Document(collection = "message")
 public class PrivateMessage extends BaseMessage {
-    private String receiverUserId;
     private MessageType type = MessageType.PRIVATE;
 
     public PrivateMessage (
             String chatId,
             String senderUserId,
-            String receiverUserId,
             @Nullable String text,
             @Nullable List<MessageContent> photo,
             @Nullable List<MessageContent> video
@@ -30,7 +28,6 @@ public class PrivateMessage extends BaseMessage {
         super();
         this.chatId = chatId;
         this.userId = senderUserId;
-        this.receiverUserId = receiverUserId;
         this.text = text;
         this.photo = photo;
         this.video = video;

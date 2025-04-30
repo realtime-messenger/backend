@@ -73,7 +73,6 @@ public class MessageService {
         PrivateMessage newMessage = new PrivateMessage(
                 chat.getId(),
                 senderId,
-                receiverId,
                 text,
                 photo,
                 video

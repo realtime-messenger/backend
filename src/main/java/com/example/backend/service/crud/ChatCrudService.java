@@ -11,6 +11,7 @@ import com.example.backend.exceptions.InternalErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -85,6 +86,10 @@ public class ChatCrudService implements IDataAccessible<BaseChat, String> {
                 firstUserId,
                 secondUserId
         );
+    }
+
+    public List<BaseChat> getChatsByUserId (String userId) {
+        return baseChatRepository.getChatsByUserId(userId);
     }
 
 }

@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -14,23 +15,26 @@ import java.time.LocalDateTime;
 @Schema(description = "Ответ сообщения")
 public class MessageResponse {
     private long id;
+    private long userId;
     private long chatId;
-    private UserResponse user;
     private String text;
+
+    private List<MessageContentResponse> photo;
+    private List<MessageContentResponse> video;
+    private List<ReactionResponse> reaction;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dateCreated;
 
+
     public MessageResponse(
             long id,
             long chatId,
-            UserResponse user,
             String text,
             LocalDateTime dateCreated
     ) {
         this.id=id;
         this.chatId=chatId;
-        this.user=user;
         this.text=text;
         this.dateCreated=dateCreated;
     }

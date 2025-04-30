@@ -1,8 +1,10 @@
 package com.example.backend.service.business;
 
+import com.example.backend.model.chat.BaseChat;
 import com.example.backend.model.chat.PrivateChat;
 import com.example.backend.model.chat.PublicChat;
 import com.example.backend.service.crud.ChatCrudService;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,8 +51,10 @@ public class ChatService {
         //отослать ивент всем причастным
     }
 
-
-    // метод для получения списка чатов 
-
+    public List<BaseChat> getUserChats (
+            @NotNull String userId
+    ) {
+        return chatCrudService.getChatsByUserId(userId);
+    }
 
 }
