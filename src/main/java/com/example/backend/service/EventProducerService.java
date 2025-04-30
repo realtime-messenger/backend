@@ -1,8 +1,6 @@
 package com.example.backend.service;
 
 import com.example.backend.DTO.event.IEvent;
-import com.example.backend.model.chat.Chat;
-import com.example.backend.model.user.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +37,7 @@ public class EventProducerService {
     // Клиенты подписываются на топик /topic/user/{userId} что бы получать ивенты адресованные персонально им
     // Пример: Был создан новый чат
     public void produceEventToUser(
-            User user,
+            long userId,
             IEvent event
     ) {
         String json;
@@ -49,7 +47,7 @@ public class EventProducerService {
             System.out.println(e.getMessage());
             return;
         }
-        template.convertAndSend("/topic/" + "user" + user.getId(), json);
+        template.convertAndSend("/topic/" + "user" + userId, json);
     }
 
     // Клиенты подписываются на топик /topic/chat/{chatId} что бы получать ивенты которые нужно получить всем участникам
@@ -57,7 +55,7 @@ public class EventProducerService {
     // Пример: Новое сообщение в чате; Удалено сообщение у всех участников чата; Изменились реакции; Пользователь начал
     // печатать в чат
     public void produceEventToChat(
-            Chat chat,
+            long chatId,
             IEvent event
     ) {
         String json;
@@ -67,7 +65,7 @@ public class EventProducerService {
             System.out.println(e.getMessage());
             return;
         }
-        template.convertAndSend("/topic/" + "chat" + chat.getId(), json);
+        template.convertAndSend("/topic/" + "chat" + chatId, json);
     }
 
     // Клиенты подписываются на топик /topic/user-online/{userId} что бы получать ивенты об онлайне конкретного

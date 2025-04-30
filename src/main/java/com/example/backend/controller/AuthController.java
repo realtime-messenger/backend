@@ -6,7 +6,7 @@ import com.example.backend.DTO.request.JwtRequest;
 import com.example.backend.DTO.response.JwtResponse;
 import com.example.backend.model.user.User;
 import com.example.backend.service.AuthService;
-import com.example.backend.service.UserService;
+import com.example.backend.service.crud.UserCrudService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.security.auth.message.AuthException;
@@ -20,12 +20,12 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Аутентификация")
 public class AuthController {
     private final AuthService authService;
-    private final UserService userService;
+    private final UserCrudService userCrudService;
 
     @Autowired
-    public AuthController(AuthService authService, UserService userService) {
+    public AuthController(AuthService authService, UserCrudService userCrudService) {
         this.authService = authService;
-        this.userService = userService;
+        this.userCrudService = userCrudService;
     }
 
     @Operation(summary = "Регистрация")
@@ -34,7 +34,7 @@ public class AuthController {
             @RequestBody
             CreateUserRequest request
     ) throws AuthException {
-        User user = userService.create(
+        User user = userCrudService.create(
                 new User(
                         request.getFirstName(),
                         request.getLastName(),

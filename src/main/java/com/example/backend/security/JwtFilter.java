@@ -1,7 +1,6 @@
 package com.example.backend.security;
 
 import com.example.backend.service.JwtService;
-import com.example.backend.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,7 +19,7 @@ public class JwtFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
 
     @Autowired
-    public JwtFilter(JwtService jwtService, UserService userService) {
+    public JwtFilter(JwtService jwtService) {
         this.jwtService = jwtService;
     }
 
