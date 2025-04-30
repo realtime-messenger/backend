@@ -1,6 +1,6 @@
 package com.example.backend.model.user;
 
-import com.example.backend.model.BaseEntity;
+import com.example.backend.model.BaseRdbmsEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,7 +14,7 @@ import java.util.List;
 @Entity(name = "users")
 @Builder
 @Getter
-public class User extends BaseEntity implements UserDetails {
+public class User extends BaseRdbmsEntity implements UserDetails {
     @Column(name = "first_name", nullable = false)
     private String firstName;
 

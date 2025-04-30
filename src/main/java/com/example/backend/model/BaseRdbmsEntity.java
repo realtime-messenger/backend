@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 @Getter
 @Setter
-public abstract class BaseEntity {
+public abstract class BaseRdbmsEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -18,7 +18,7 @@ public abstract class BaseEntity {
     @Column(name = "date_created", nullable = false)
     protected LocalDateTime dateCreated;
 
-    public BaseEntity() {
+    public BaseRdbmsEntity() {
         this.dateCreated = LocalDateTime.now();
     }
 
