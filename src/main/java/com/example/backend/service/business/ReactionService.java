@@ -1,9 +1,8 @@
 package com.example.backend.service.business;
 
-import com.example.backend.model.message.BaseMessage;
+import com.example.backend.model.message.Message;
 import com.example.backend.model.messageReaction.MessageReaction;
 import com.example.backend.service.crud.MessageCrudService;
-import com.fasterxml.jackson.databind.ser.Serializers;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.stereotype.Service;
 
@@ -24,13 +23,13 @@ public class ReactionService {
             @NotNull String messageId,
             @NotNull String reaction
     ) {
-        Optional<BaseMessage> opt_Message = messageCrudService.getById(messageId);
+        Optional<Message> opt_Message = messageCrudService.getById(messageId);
 
         if (opt_Message.isEmpty()) {
             return;
         }
 
-        BaseMessage message = opt_Message.get();
+        Message message = opt_Message.get();
 
         List<MessageReaction> reactions = message.getReaction();
 
@@ -64,13 +63,13 @@ public class ReactionService {
             @NotNull String userId,
             @NotNull String messageId
     ) {
-        Optional<BaseMessage> opt_Message = messageCrudService.getById(messageId);
+        Optional<Message> opt_Message = messageCrudService.getById(messageId);
 
         if (opt_Message.isEmpty()) {
             return;
         }
 
-        BaseMessage message = opt_Message.get();
+        Message message = opt_Message.get();
 
         List<MessageReaction> reactions = message.getReaction();
 

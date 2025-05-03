@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class DeleteMessageRequest {
 
-    private long messageId;
+    private String messageId;
     private boolean global;
 
     public DeleteMessageRequest() {

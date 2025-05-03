@@ -1,7 +1,7 @@
 package com.example.backend.mapper;
 
 import com.example.backend.DTO.response.MessageExtendedResponse;
-import com.example.backend.model.message.BaseMessage;
+import com.example.backend.model.message.Message;
 import com.example.backend.model.messageStatus.MessageStatus;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -17,7 +17,7 @@ public interface MessageMapper {
     @Mapping(target = "userId", source = "message.userId")
     @Mapping(target = "chatId", source = "message.chatId")
     MessageExtendedResponse toMessageResponseExtended(
-            BaseMessage message,
+            Message message,
             MessageStatus userMessageStatus
     );
 }

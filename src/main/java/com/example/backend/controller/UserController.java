@@ -1,11 +1,11 @@
 package com.example.backend.controller;
 
 import com.example.backend.DTO.response.UserResponse;
-import com.example.backend.mapper.UserMapper;
-import com.example.backend.service.crud.UserCrudService;
+import com.example.backend.service.business.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,13 +21,11 @@ import java.util.List;
 @SecurityRequirement(name = "bearerAuth")
 public class UserController {
 
-    private final UserCrudService userCrudService;
-    private final UserMapper userMapper;
+    private final UserService userService;
 
     @Autowired
-    public UserController(UserCrudService userCrudService, UserMapper userMapper) {
-        this.userCrudService = userCrudService;
-        this.userMapper = userMapper;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping("")
@@ -38,9 +36,17 @@ public class UserController {
     ) {
         long id = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
 
-       return userMapper.toUserResponseList(
-               userCrudService.getUsersAlike(query, id)
-       );
+
+        return userService.getUsersFuzzy(query, id);
+    }
+
+    @GetMapping("/byId")
+    public UserResponse getUserById(
+            @RequestParam("userId")
+            @NotNull
+            Long userId
+    ) {
+        return userService.getUserById(userId);
     }
 
 }

@@ -15,7 +15,6 @@ public class BaseChatResponse {
     protected String type;
 
     protected List<String> userId;
-    protected MessageResponse lastMessage;
 
     protected LocalDateTime dateCreated;
 }

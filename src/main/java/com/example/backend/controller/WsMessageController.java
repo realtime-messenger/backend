@@ -1,8 +1,12 @@
 package com.example.backend.controller;
 
 import com.example.backend.DTO.command.*;
+import com.example.backend.model.chat.BaseChat;
+import com.example.backend.model.message.Message;
 import com.example.backend.model.user.User;
 import com.example.backend.service.business.MessageService;
+import com.example.backend.service.crud.ChatCrudService;
+import com.example.backend.service.crud.MessageCrudService;
 import com.example.backend.service.crud.UserCrudService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -16,10 +20,16 @@ import java.util.Objects;
 @Controller
 public class WsMessageController {
     private final MessageService messageService;
+    private final UserCrudService userCrudService;
+    private final MessageCrudService messageCrudService;
+    private final ChatCrudService chatCrudService;
 
     @Autowired
-    public WsMessageController(MessageService messageService) {
+    public WsMessageController(MessageService messageService, UserCrudService userCrudService, MessageCrudService messageCrudService, ChatCrudService chatCrudService) {
         this.messageService = messageService;
+        this.userCrudService = userCrudService;
+        this.messageCrudService = messageCrudService;
+        this.chatCrudService = chatCrudService;
     }
 
 //
@@ -80,36 +90,34 @@ public class WsMessageController {
                 null
         );
     }
-//
-//    @MessageMapping("/delete-message")
-//    public void deleteMessage(
-//            @Payload
-//            DeleteMessageRequest request,
-//            SimpMessageHeaderAccessor headerAccessor
-//
-//    ) throws Exception {
-//
-//        long userId = Long.parseLong(headerAccessor.getSessionAttributes().get("userId").toString());
-//        User user = userCrudService.getById(userId);
-//
-//        Message message = messageCrudService.getById(request.getMessageId());
-//
-//        if (request.isGlobal() && !Objects.equals(message.getUserId(), user.getId())) {
-//            return;
-//        }
-//
-//        Chat chat = chatCrudService.getById(
-//                message.getChatId()
-//        );
-//
-//
-//        if (request.isGlobal()) {
-//            messageCrudService.deleteMessage(message, chat);
-//        }
-//        else {
-//            messageCrudService.deleteMessage(message, user);
-//        }
-//    }
+
+    @MessageMapping("/delete-message")
+    public void deleteMessage(
+            @Payload
+            DeleteMessageRequest request,
+            SimpMessageHeaderAccessor headerAccessor
+
+    ) {
+        long userId = Long.parseLong(headerAccessor.getSessionAttributes().get("userId").toString());
+        User user = userCrudService.getById(userId).orElseThrow();
+
+        Message message = messageCrudService.getById(request.getMessageId()).orElseThrow();
+
+        if (request.isGlobal() && !Objects.equals(
+                message.getUserId(),
+                String.valueOf(user.getId())
+            )
+        ) {
+            return;
+        }
+
+        if (request.isGlobal()) {
+            messageService.deleteMessage(message);
+        }
+        else {
+            messageService.deleteMessage(message, user);
+        }
+    }
 //
 //    @MessageMapping("/read-message")
 //    public void readMessage(
