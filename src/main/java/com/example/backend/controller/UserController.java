@@ -1,13 +1,12 @@
 package com.example.backend.controller;
 
-import com.example.backend.DTO.response.IdResponse;
 import com.example.backend.DTO.response.UserResponse;
-import com.example.backend.service.UserService;
+import com.example.backend.mapper.UserMapper;
+import com.example.backend.service.crud.UserCrudService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,11 +21,13 @@ import java.util.List;
 @SecurityRequirement(name = "bearerAuth")
 public class UserController {
 
-    private final UserService userService;
+    private final UserCrudService userCrudService;
+    private final UserMapper userMapper;
 
     @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public UserController(UserCrudService userCrudService, UserMapper userMapper) {
+        this.userCrudService = userCrudService;
+        this.userMapper = userMapper;
     }
 
     @GetMapping("")
@@ -35,17 +36,11 @@ public class UserController {
             @Nullable
             String query
     ) {
-        // TODO
-        // не показывать конкретно этого пользователя
-        // не показыавть пользователей с которыми есть приватный чат
-       return userService.getUsersAlike(query);
+        long id = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
+
+       return userMapper.toUserResponseList(
+               userCrudService.getUsersAlike(query, id)
+       );
     }
 
-    @Deprecated
-    @GetMapping("/myId")
-    public IdResponse getMyUserId () {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        long id = Long.parseLong(authentication.getName());
-        return new IdResponse(id);
-    }
 }

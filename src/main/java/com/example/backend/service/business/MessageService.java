@@ -1,6 +1,10 @@
 package com.example.backend.service.business;
 
+import com.example.backend.DTO.response.MessageExtendedResponse;
+import com.example.backend.exceptions.InternalErrorException;
+import com.example.backend.mapper.MessageMapper;
 import com.example.backend.model.chat.PrivateChat;
+import com.example.backend.model.message.BaseMessage;
 import com.example.backend.model.message.PrivateMessage;
 import com.example.backend.model.messageContent.MessageContent;
 import com.example.backend.model.messageContent.MessageContentType;
@@ -19,11 +23,13 @@ public class MessageService {
     private final ChatCrudService chatCrudService;
     private final MessageCrudService messageCrudService;
     private final MessageStatusCrudService messageStatusCrudService;
+    private final MessageMapper messageMapper;
 
-    public MessageService(ChatCrudService chatCrudService, MessageCrudService messageCrudService, MessageStatusCrudService messageStatusCrudService) {
+    public MessageService(ChatCrudService chatCrudService, MessageCrudService messageCrudService, MessageStatusCrudService messageStatusCrudService, MessageMapper messageMapper) {
         this.chatCrudService = chatCrudService;
         this.messageCrudService = messageCrudService;
         this.messageStatusCrudService = messageStatusCrudService;
+        this.messageMapper = messageMapper;
     }
 
     public void sendPrivateMessage(
@@ -104,4 +110,36 @@ public class MessageService {
     // метод для удаления сообщений
     // метод для чтения сообщений
 
+    public List<MessageExtendedResponse> getChatMessages (
+            String userId,
+            String chatId,
+            int skip,
+            int limit
+    ) {
+        var messages = messageCrudService.getChatMessages(
+                String.valueOf(chatId),
+                skip,
+                limit
+        );
+
+        List<MessageExtendedResponse> result = new ArrayList<>();
+
+        for (BaseMessage message : messages) {
+
+            MessageStatus status = messageStatusCrudService.getByMessageIdAndUserId(
+                    userId,
+                    message.getChatId()
+            ).orElseThrow(InternalErrorException::new);
+
+            result.add(
+                    messageMapper.toMessageResponseExtended(
+                            message,
+                            status
+                    )
+            );
+        }
+
+        return result;
+
+    }
 }

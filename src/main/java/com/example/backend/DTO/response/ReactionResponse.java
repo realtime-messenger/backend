@@ -13,9 +13,9 @@ import java.time.LocalDateTime;
 @Data
 @Schema(description = "Ответ реакции")
 public class ReactionResponse {
-    private long messageId;
+    private String messageId;
     private long userId;
-    private long chatId;
+    private String chatId;
     private String reaction;
     private LocalDateTime dateCreated;
 }

@@ -20,6 +20,7 @@ public class SecurityConfiguration {
             "/swagger-ui/**",
             "/api-docs/**",
             "/api/v1/auth/**",
+            "/api/v1/mongp/**",
             "/ws/**",
             "/ws"
     };

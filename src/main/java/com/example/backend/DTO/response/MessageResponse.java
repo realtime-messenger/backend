@@ -14,9 +14,9 @@ import java.util.List;
 @Data
 @Schema(description = "Ответ сообщения")
 public class MessageResponse {
-    private long id;
+    private String id;
     private long userId;
-    private long chatId;
+    private String chatId;
     private String text;
 
     private List<MessageContentResponse> photo;
@@ -28,8 +28,8 @@ public class MessageResponse {
 
 
     public MessageResponse(
-            long id,
-            long chatId,
+            String id,
+            String chatId,
             String text,
             LocalDateTime dateCreated
     ) {

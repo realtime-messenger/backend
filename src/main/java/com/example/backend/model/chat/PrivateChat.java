@@ -12,6 +12,7 @@ import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
+@NoArgsConstructor
 @Document(collection = "chat")
 public class PrivateChat extends BaseChat {
     private ChatType type = ChatType.PRIVATE;

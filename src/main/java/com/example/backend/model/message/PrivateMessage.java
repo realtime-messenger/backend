@@ -9,14 +9,11 @@ import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Getter
 @Setter
 @Document(collection = "message")
 public class PrivateMessage extends BaseMessage {
-    private MessageType type = MessageType.PRIVATE;
+    private final MessageType type = MessageType.PRIVATE;
 
     public PrivateMessage (
             String chatId,

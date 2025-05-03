@@ -7,6 +7,11 @@ import com.example.backend.model.message.PublicMessage;
 import com.example.backend.repository.*;
 import com.example.backend.service.crud.Interface.IDataAccessible;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,7 +25,7 @@ public class MessageCrudService implements IDataAccessible<BaseMessage, String> 
     private final BaseMessageRepository baseMessageRepository;
 
     @Autowired
-    public MessageCrudService(PrivateMessageRepository privateMessageRepository, PublicMessageRepository publicMessageRepository, BaseMessageRepository baseMessageRepository) {
+    public MessageCrudService(PrivateMessageRepository privateMessageRepository, PublicMessageRepository publicMessageRepository, BaseMessageRepository baseMessageRepository, MongoTemplate mongoTemplate) {
         this.privateMessageRepository = privateMessageRepository;
         this.publicMessageRepository = publicMessageRepository;
         this.baseMessageRepository = baseMessageRepository;
@@ -65,5 +70,13 @@ public class MessageCrudService implements IDataAccessible<BaseMessage, String> 
 
     public List<BaseMessage> getByChatId (String chatId) {
         return baseMessageRepository.getBaseMessagesByChatId(chatId);
+    }
+
+    public List<BaseMessage> getChatMessages (
+            String chatId,
+            long skip,
+            long limit
+    ) {
+        return baseMessageRepository.getBaseMessagesByChatId(chatId, skip, limit);
     }
 }

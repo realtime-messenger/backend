@@ -1,14 +1,12 @@
 package com.example.backend.service.crud;
 
-import com.example.backend.DTO.response.UserResponse;
 import com.example.backend.exceptions.UserAlreadyExistException;
 import com.example.backend.exceptions.UserNotFoundException;
-import com.example.backend.mapper.UserMapper;
 import com.example.backend.model.user.User;
 import com.example.backend.repository.UserRepository;
 import com.example.backend.service.crud.Interface.IDataAccessible;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,12 +16,12 @@ import java.util.Optional;
 public class UserCrudService implements IDataAccessible<User, Long> {
 
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
+    private final ChatCrudService chatCrudService;
 
     @Autowired
-    public UserCrudService(UserRepository userRepository, UserMapper userMapper) {
+    public UserCrudService(UserRepository userRepository, ChatCrudService chatCrudService) {
         this.userRepository = userRepository;
-        this.userMapper = userMapper;
+        this.chatCrudService = chatCrudService;
     }
 
     public User save(User entity) {
@@ -63,9 +61,18 @@ public class UserCrudService implements IDataAccessible<User, Long> {
     }
 
     public List<User> getUsersAlike(
-            String query
+            String query,
+            @NotNull Long userId
     ) {
-        return userRepository.findFuzzy(query);
+
+        List<User> users = userRepository.findFuzzy(query);
+
+        users.removeIf(user -> (
+                user.getId() == userId ||
+                chatCrudService.getPrivateChatOfUsers(user.getId().toString(),userId.toString()).isPresent()
+        ));
+
+        return users;
     }
 
 }

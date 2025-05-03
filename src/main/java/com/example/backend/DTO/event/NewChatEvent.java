@@ -1,6 +1,6 @@
 package com.example.backend.DTO.event;
 
-import com.example.backend.DTO.response.ChatResponse;
+import com.example.backend.DTO.response.BaseChatResponse;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,9 +10,9 @@ import lombok.Setter;
 @Setter
 public class NewChatEvent implements IEvent {
     protected EventType type = EventType.NewChat;
-    private ChatResponse chat;
+    private BaseChatResponse chat;
 
-    public NewChatEvent (ChatResponse chat) {
+    public NewChatEvent (BaseChatResponse chat) {
         this.chat = chat;
     }
 }

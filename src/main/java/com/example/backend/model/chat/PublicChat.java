@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 @Document(collection = "chat")
 public class PublicChat extends BaseChat {
-    private ChatType type = ChatType.PUBLIC;
+    private final ChatType type = ChatType.PUBLIC;
     private String title;
 
     public PublicChat(
