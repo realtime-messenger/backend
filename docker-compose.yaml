@@ -70,22 +70,22 @@ services:
       rabbitmq:
         condition: service_healthy
 
-#  realtime-messenger:
-#    container_name: ${COMPOSE_PROJECT_NAME}-backend
-#    image: 'realtime-messenger'
-#    ports:
-#      - "127.0.0.1:8080:8080"
-#    env_file:
-#      - .env
-#    depends_on:
-#      rabbitmq:
-#        condition: service_healthy
-#      db:
-#        condition: service_healthy
-#      mongo:
-#        condition: service_started
-#      online-tracking-service:
-#        condition: service_started
+  realtime-messenger:
+    container_name: ${COMPOSE_PROJECT_NAME}-backend
+    image: 'realtime-messenger'
+    ports:
+      - "127.0.0.1:8080:8080"
+    env_file:
+      - .env
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+      mongo:
+        condition: service_started
+      online-tracking-service:
+        condition: service_started
 
 
 
