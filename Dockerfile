@@ -1,6 +1,12 @@
-FROM openjdk:24
-WORKDIR /app
-COPY build/libs/backend-RELEASE.jar .
-COPY .env .
+FROM amazoncorretto:24
+RUN dnf install -y findutils
 
-CMD ["java", "-jar", "backend-RELEASE.jar"]
+WORKDIR /app
+
+COPY . .
+
+RUN ls -laht
+
+RUN chmod +x gradlew
+RUN ["./gradlew", "build"]
+CMD ["java", "-jar", "./build/libs/backend-RELEASE.jar"]
