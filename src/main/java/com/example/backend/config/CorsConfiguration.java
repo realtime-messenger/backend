@@ -14,7 +14,10 @@ public class CorsConfiguration {
         final List<String> allowedOrigins = List.of(
                 "http://localhost:5173",
                 "http://192.168.0.13:5173",
-                "https://messenger.gladyshdd.ru"
+                "https://messenger.gladyshdd.ru",
+                "http://messenger.gladyshdd.ru",
+                "http://messenger.gladyshdd.ru:26503",
+                "https://messenger.gladyshdd.ru:26503"
         );
         final List<String> allowedMethods = List.of("HEAD", "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS");
         final List<String> allowedHeaders = List.of("*");
